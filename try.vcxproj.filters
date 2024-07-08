@@ -204,6 +204,10 @@
     <ClCompile Include="Engine\2d\PostEffect\Effect\RadialBlur.cpp" />
     <ClCompile Include="Engine\2d\PostEffect\Effect\Random.cpp" />
     <ClCompile Include="Engine\2d\PostEffect\Effect\Dissolve.cpp" />
+    <ClCompile Include="Game\Player\Player.cpp" />
+    <ClCompile Include="Game\Enemy.cpp" />
+    <ClCompile Include="Game\Floor.cpp" />
+    <ClCompile Include="Game\Item.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lib\utility\function.h">
@@ -396,6 +400,10 @@
     <ClInclude Include="Engine\2d\PostEffect\Effect\GrayScale.h" />
     <ClInclude Include="Engine\2d\PostEffect\Effect\RadialBlur.h" />
     <ClInclude Include="Engine\2d\PostEffect\Effect\Random.h" />
+    <ClInclude Include="Game\Player\Player.h" />
+    <ClInclude Include="Game\Enemy.h" />
+    <ClInclude Include="Game\Floor.h" />
+    <ClInclude Include="Game\Item.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shader\Object3d.PS.hlsl">

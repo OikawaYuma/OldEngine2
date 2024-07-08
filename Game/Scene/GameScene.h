@@ -7,6 +7,7 @@
 #include "PostProcess.h"
 
 #include <vector>
+#include <Player.h>
 
 
 class GameScene :public IScene

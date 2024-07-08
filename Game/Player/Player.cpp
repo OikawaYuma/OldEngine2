@@ -58,10 +58,7 @@ void Player::Update()
 		worldTransform_.scale_ = Add(worldTransform_.scale_, {0.05f,0.05f,0.05f});
 		worldTransform_.translation_.y += 0.05f;
 	}
-	if (Input::GetInstance()->PushKey(DIK_O)) {
-		worldTransform_.scale_ = Subtract(worldTransform_.scale_, { 0.05f,0.05f,0.05f });
-		worldTransform_.translation_.y -= 0.05f;
-	}
+
 
 
 
