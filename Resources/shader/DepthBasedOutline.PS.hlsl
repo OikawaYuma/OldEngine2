@@ -91,7 +91,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     // 変化の長さをウェイトとして合成。ウェイトの決定方法も色々と考えられる。例えばdifference.xだけ使えば横方向のエッジが検出される
     float32_t weight = length(difference);
     // 差が小さい過ぎてわかりずらいので適当に6倍している。CBufferで調整パラメータとして送ったりすると良い
-    weight = saturate(weight);
+    weight = 0;
     
     PixelShaderOutput output;
     // weightが大きいほど暗く表示するようにしている。最もシンプルな合成方法

@@ -1,5 +1,6 @@
 #pragma once
 #include "IScene.h"
+#include "RailCamera/RailCamera.h"
 #include "Player/Player.h"
 #include "Floor.h"
 #include "Item.h"
@@ -20,7 +21,7 @@ public:
 	void Release()override;
 	int GameClose()override;
 private:
-	std::unique_ptr<Camera> camera_ = nullptr;
+	std::unique_ptr<RailCamera> camera_ = nullptr;
 	std::unique_ptr<Player> player_ = nullptr;
 	Floor* flooar_ = nullptr;
 	Item* item_ = nullptr;

@@ -3,12 +3,12 @@
 #include "ImGuiCommon.h"
 void GameScene::Init()
 {
-	camera_ = std::make_unique<Camera>();
-	camera_->Initialize();
+	camera_ = std::make_unique<RailCamera>();
+	camera_->Init();
 	player_ = std::make_unique<Player>();
 	player_->Init();
-	player_->SetCamera(camera_.get());
-	camera_->SetRotate({ 0.06f, 0.0f, 0.0f });
+	player_->SetCamera(camera_->GetCamera());
+	
 	flooar_ = new Floor();
 	flooar_->Init();
 	
@@ -19,7 +19,7 @@ void GameScene::Init()
 	enemy_->Init();
 
 	postProcess_ = new PostProcess();
-	postProcess_->SetCamera(camera_.get());
+	postProcess_->SetCamera(camera_->GetCamera());
 	postProcess_->Init();
 }
 
@@ -34,10 +34,10 @@ void GameScene::Update()
 	}
 void GameScene::Draw()
 {
-	player_->Draw(camera_.get());
-	flooar_->Draw(camera_.get());
-	item_->Draw(camera_.get());
-	enemy_->Draw(camera_.get());
+	player_->Draw(camera_->GetCamera());
+	flooar_->Draw(camera_->GetCamera());
+	item_->Draw(camera_->GetCamera());
+	enemy_->Draw(camera_->GetCamera());
 }
 
 void GameScene::PostDraw()

@@ -181,6 +181,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\2d\PostEffect\Effect\Vignette.cpp" />
     <ClCompile Include="Engine\2d\PostEffect\Effect\RadialBlur.cpp" />
     <ClCompile Include="Engine\2d\PostEffect\Effect\Random.cpp" />
+    <ClCompile Include="Game\RailCamera\RailCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\2d\PostEffect\Effect\Dissolve.h" />
@@ -261,6 +262,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\2d\PostEffect\Effect\Vignette.h" />
     <ClInclude Include="Engine\2d\PostEffect\Effect\RadialBlur.h" />
     <ClInclude Include="Engine\2d\PostEffect\Effect\Random.h" />
+    <ClInclude Include="Game\RailCamera\RailCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shader\Fog.PS.hlsl">

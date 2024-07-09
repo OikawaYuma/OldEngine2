@@ -8,7 +8,11 @@ public:
 	void Init();
 	void Update();
 	void Draw(Camera* camera);
+public:// Getter
+
+public: // Setter
 	void SetCamera(Camera* camera) { camera_ = camera; };
+	//void SetParent(Matrix4x4 cameraMatWorld) { worldTransform_.parent_ = cameraMatWorld; }
 	
 private:
 	std::unique_ptr<Object3d> object_;
