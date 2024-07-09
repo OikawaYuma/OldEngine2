@@ -1,4 +1,6 @@
 #pragma once
+
+#pragma once
 #include"WinAPI.h"
 
 #include "Vector3.h"
@@ -23,12 +25,12 @@ public: //Getter
 	const Matrix4x4& GetViewprojectionMatrix() const { return viewProjectionMatrix_; }
 
 	const float& GetFarClip() const { return farClip_; }
-	
+
 public: //Setter
 	void SetRotate(const Vector3& rotate) { transform_.rotate = rotate; }
 	void SetTranslate(const Vector3& translate) { transform_.translate = translate; }
-	void SetFovY(){}
-	void SetAspectRario(){}
+	void SetFovY() {}
+	void SetAspectRario() {}
 	void SetNearClip() {}
 	void SetFarClip(const float& clip) { farClip_ = clip; }
 
@@ -44,4 +46,5 @@ private:
 	float nearClip_ = 0.1f;
 	float farClip_ = 150.0f;
 };
+
 

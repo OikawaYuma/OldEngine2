@@ -52,7 +52,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     float32_t2 uvStepSize = float32_t2(rcp(width), rcp(height));
     
     // kernelを求める weightは後で使う
-    uint32_t weight = 0.0f;
+    float32_t weight = 0.0f;
     float32_t kernel5x5[5][5];
     for (int32_t x = 0; x < KenelSize; ++x)
     {
@@ -83,7 +83,8 @@ PixelShaderOutput main(VertexShaderOutput input)
     
     // 畳み込み後の値を正規化する。本来gauss関数は全体を合計すると（積分）になるように設計されている。しかし、無限の範囲は足せないので、kernel値
     // の合計であるweughtは1に満たない。なので、合計が1になるように逆数を掛けて全体を底上げして調整する
-    output.color.rgb = normalize(output.color.rgb);
+  
+    output.color.rgb *= rcp(weight);
     //output.color.rgb *= normalize(weight);
     
     return output;

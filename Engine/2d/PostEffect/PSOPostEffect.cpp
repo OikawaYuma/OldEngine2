@@ -7,6 +7,7 @@
 #include "Effect/GaussianBlur.h"
 #include "Effect/RadialBlur.h"
 #include "Effect/Random.h"
+#include "Effect/Bloom.h"
 #include <d3dx12.h>
 
 
@@ -22,6 +23,7 @@ void PSOPostEffect::Init()
 	effectArr_[PostEffectMode::kOutline] = std::make_unique<DepthOutline>();
 	effectArr_[PostEffectMode::kRadialBlur] = std::make_unique<RadialBlur>();
 	effectArr_[PostEffectMode::kRandom] = std::make_unique<Random>();
+	effectArr_[PostEffectMode::kBloom] = std::make_unique<Bloom>();
 	effectArr_[currentEffectNo_]->Init();
 	property = effectArr_[currentEffectNo_]->CreatePipelineStateObject();
 }
