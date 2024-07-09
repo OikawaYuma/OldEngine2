@@ -25,3 +25,4 @@ public:
 	static void LoadJsonFile(const std::string kDefaultBaseDirectory, const std::string fileName,std::vector<Object3d*>& objects,Camera* camera);
 };
 
+
