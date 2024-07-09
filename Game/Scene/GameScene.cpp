@@ -21,23 +21,27 @@ void GameScene::Init()
 	postProcess_ = new PostProcess();
 	postProcess_->SetCamera(camera_->GetCamera());
 	postProcess_->Init();
+	IPostEffectState::SetEffectNo(PostEffectMode::kBloom);
 }
 
 void GameScene::Update()
 {
 	
-	camera_->Update();
+	
 	player_->Update();
+	camera_->Update();
 	flooar_->Update();
 	item_->Update();
 	enemy_->Update();
 	}
 void GameScene::Draw()
 {
-	player_->Draw(camera_->GetCamera());
-	flooar_->Draw(camera_->GetCamera());
+	
+	
 	item_->Draw(camera_->GetCamera());
 	enemy_->Draw(camera_->GetCamera());
+	player_->Draw(camera_->GetCamera());
+	flooar_->Draw(camera_->GetCamera());
 }
 
 void GameScene::PostDraw()

@@ -14,6 +14,7 @@ private:
 	std::unique_ptr<Object3d> object_;
 	uint32_t floorTex_;
 	WorldTransform worldTransform_;
+	Camera* camera_ = nullptr;
 };
 
 

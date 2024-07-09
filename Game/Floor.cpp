@@ -30,6 +30,7 @@ void Floor::Update()
 
 void Floor::Draw(Camera* camera)
 {
-	object_->Draw(floorTex_, camera);
+	camera_ = camera;
+	object_->Draw(floorTex_, camera_);
 }
 

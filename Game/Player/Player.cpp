@@ -28,7 +28,7 @@ void Player::Update()
 
 	Vector3 camerarotate_ = camera_->GetRotate();
 	Vector3 preCameraToPlayerDistance = cameraToPlayerDistance_;
-	float cameraFarY = 50.0f;
+	float cameraFarY = camera_->GetFarClip();
 	ImGui::Begin("Player & camera");
 
 	ImGui::DragFloat3("playerScale", &worldTransform_.scale_.x);
@@ -71,7 +71,7 @@ void Player::Update()
 		accel_ = 0.0f;
 		isJump_ = false;
 	}
-	//worldTransform_.translation_.z += 1.0f;
+	worldTransform_.translation_.z += 1.0f;
 	worldTransform_.UpdateMatrix();
 	camera_->SetTranslate({ 
 		worldTransform_.translation_.x + cameraToPlayerDistance_.x,

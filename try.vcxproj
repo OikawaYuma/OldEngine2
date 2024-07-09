@@ -117,6 +117,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\2d\PostEffect\Effect\Bloom.cpp" />
     <ClCompile Include="Engine\2d\PostEffect\Effect\Dissolve.cpp" />
     <ClCompile Include="Engine\2d\PostEffect\Effect\DepthOutline.cpp" />
     <ClCompile Include="Engine\3d\Animation\Animation.cpp" />
@@ -184,6 +185,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\RailCamera\RailCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\2d\PostEffect\Effect\Bloom.h" />
+    <ClInclude Include="Engine\Interface\Camera.h" />
     <ClInclude Include="Engine\2d\PostEffect\Effect\Dissolve.h" />
     <ClInclude Include="Engine\2d\PostEffect\Effect\DepthOutline.h" />
     <ClInclude Include="Engine\3d\Animation\Animation.h" />
@@ -227,7 +230,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Interface\PSO\PSOModel.h" />
     <ClInclude Include="Engine\3d\Sphere\Sphere.h" />
     <ClInclude Include="Engine\2d\Sprite.h" />
-    <ClInclude Include="Engine\Interface\Camera.h" />
     <ClInclude Include="Engine\Interface\DirectXCommon.h" />
     <ClInclude Include="Engine\3d\Triangle\Triangle.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />
@@ -265,6 +267,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\RailCamera\RailCamera.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Resources\shader\Bloom.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Resources\shader\Fog.PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
