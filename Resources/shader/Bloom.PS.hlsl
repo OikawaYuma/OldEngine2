@@ -117,8 +117,8 @@ PixelShaderOutput main(VertexShaderOutput input)
     bloomGauss *= rcp(weight);
 
     PixelShaderOutput output;
-    //output.color = gTexture.Sample(gSampler, input.texcoord);
-    output.color.rgb = bloomGauss;
+    output.color = gTexture.Sample(gSampler, input.texcoord);
+    output.color.rgb += bloomGauss;
     output.color.a = 1.0f;
   
     return output;

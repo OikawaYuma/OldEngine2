@@ -40,6 +40,7 @@ static const float32_t2 kIndex5x5[5][5] =
 
 
 
+
 struct PixelShaderOutput
 {
     float32_t4 color : SV_TARGET0;
