@@ -4,7 +4,10 @@
 #include "Matrix4x4.h"
 
 struct BloomInfo {
-	Matrix4x4 projectionInverse;
+	float deviation;
+	float luminance;
+	float brightness;
+	int kernelSize;
 };
 class PostProcess;
 class Bloom : public IPostEffectState
@@ -71,7 +74,7 @@ private:
 	// 頂点バッファビューを作成する
 	D3D12_VERTEX_BUFFER_VIEW materialBufferView{};
 	// 頂点リソースにデータを書き込む
-	BloomInfo* depthOutlinelData_;
+	BloomInfo* bloomData_;
 
 
 };

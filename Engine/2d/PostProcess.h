@@ -22,6 +22,7 @@
 #include "TextureManager.h"
 #include "Camera.h"
 #include "IPostEffectState.h"
+#include "Effect/Bloom.h"
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"dxcompiler.lib")
@@ -50,6 +51,8 @@ public:
 
 	float GetThreshold(){ return threshold_; }
 	float GetDeviation() { return deviation_; }
+	BloomInfo GetBloominfo() { return bloomInfo_; }
+	void SetBloomInfo(BloomInfo bloominfo) { bloomInfo_ = bloominfo; }
 
 	Vector2 GetRandom() { return random_; }
 	void Setrandom(Vector2 rand ){ random_ = rand; }
@@ -124,6 +127,6 @@ private:
 	Vector2 random_{ 16.0f,0.8f };
 	Vector3 valueColor = { 0.2125f, 0.7154f, 0.0721f };
 
-	
+	BloomInfo bloomInfo_ = { 10.0f,0.3f,1.0f, 1 };
 };
 

@@ -12,9 +12,9 @@ void Bloom::Init()
 
 	/*materialBufferView = CreateBufferView();;*/
 	// 頂点リソースにデータを書き込む
-	depthOutlinelData_ = nullptr;
+	bloomData_ = nullptr;
 	// 書き込むためのアドレスを取得
-	depthOutlineResource_->Map(0, nullptr, reinterpret_cast<void**>(&depthOutlinelData_));
+	depthOutlineResource_->Map(0, nullptr, reinterpret_cast<void**>(&bloomData_));
 
 }
 
@@ -91,7 +91,10 @@ void Bloom::CommandRootParameter(PostProcess* postProcess)
 {
 	DirectXCommon* sDirectXCommon = DirectXCommon::GetInstance();
 	Camera* camera = postProcess->GetCamera();
-	depthOutlinelData_->projectionInverse = Inverse(camera->GetProjectionMatrix());
+	bloomData_->luminance = postProcess->GetBloominfo().luminance;
+	bloomData_->deviation = postProcess->GetBloominfo().deviation;
+	bloomData_->brightness = postProcess->GetBloominfo().brightness;
+	bloomData_->kernelSize = postProcess->GetBloominfo().kernelSize;
 	// マテリアルCBufferの場所を設定
 	// SRV のDescriptorTableの先頭を設定。2はrootParameter[2]である。
 	sDirectXCommon->GetCommandList()->SetGraphicsRootDescriptorTable(0, SRVManager::GetInstance()->GetGPUDescriptorHandle(sDirectXCommon->GetRenderIndex()));

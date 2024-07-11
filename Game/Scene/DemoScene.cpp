@@ -75,16 +75,21 @@ void DemoScene::Update()
 	}
 
 	short leftStickX = joyState.Gamepad.sThumbLX;
-	if (leftStickX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
-		worldTransform.translation_.x -= 0.01f;
-		worldTransform.rotation_.y = -rotateSize_;
-	}
-	if (leftStickX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
-		worldTransform.translation_.x += 0.01f;
-		worldTransform.rotation_.y = rotateSize_;
 
-	}
 
+	Vector3 camerattt = camera->GetTranslate();
+	if (Input::GetInstance()->PushKey(DIK_A)) {
+		camerattt.x -= 0.8f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_D)) {
+		camerattt.x += 0.8f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_W)) {
+		camerattt.y += 0.8f;
+	}if (Input::GetInstance()->PushKey(DIK_S)) {
+		camerattt.y -= 0.8f;
+	}
+	camera->SetTranslate(camerattt);
 	sceneTime++;
 	////カメラの更新
 	camera->Update();
@@ -95,6 +100,7 @@ void DemoScene::Update()
 	float gauss = postProcess_->GetDeviation();
 	float threa = postProcess_->GetThreshold();
 	time_t currentTime = time(nullptr);
+	BloomInfo bloomInfo = postProcess_->GetBloominfo();
 	srand(unsigned int( currentTime));
 	int eye = rand() % 70 + 1;
 	Vector2 randaa = { float(eye),float(rand() %90 + 2)};
@@ -160,12 +166,25 @@ void DemoScene::Update()
 		}
 		ImGui::TreePop();
 	}
+
+	if (ImGui::TreeNode("Bloom")) {
+		if (ImGui::Button("Bloom On")) {
+			IPostEffectState::SetEffectNo(PostEffectMode::kBloom);
+		}
+
+		ImGui::SliderFloat("luminance", &bloomInfo.luminance, 0.2f, 0.7f);
+		ImGui::SliderFloat("Devaition", &bloomInfo.deviation, 0.0f, 10.0f);
+		ImGui::SliderFloat("brightness", &bloomInfo.brightness, 0.0f, 10.0f);
+		ImGui::SliderInt("kaernel", &bloomInfo.kernelSize, 1, 10);
+		ImGui::TreePop();
+	}
 	ImGui::End();
 
 	postProcess_->SetDarkness(viggnetDarkness);
 	postProcess_->SetDeviation(gauss);
 	postProcess_->SetThreshold(threa);
 	postProcess_->Setrandom(randaa);
+	postProcess_->SetBloomInfo(bloomInfo);
 	if (Input::GetInstance()->TriggerKey(DIK_A)) {
 		rotateSize_ = 0.0f;
 	}

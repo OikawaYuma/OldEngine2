@@ -1,27 +1,43 @@
 #include "Fullscreen.hlsli"
 
+struct Material
+{
+    float32_t deviation;
+    float32_t luminance;
+    float32_t brightness;
+    int32_t kernel;
+};
+
+ConstantBuffer<Material> gMaterial : register(b0);
+
 Texture2D<float32_t4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
-static const int32_t KenelSize = 5;
+static const int32_t KenelSizeMax = 2 * 5 + 1;
 
-static const float32_t2 kIndex3x3[3][3] =
-{
-    { { -1.0f, -1.0f }, { 0.0f, -1.0f }, { 1.0f, -1.0f } },
-    { { -1.0f, 0.0f }, { 0.0f, 0.0f }, { 1.0f, 0.0f } },
-    { { -1.0f, 1.0f }, { 0.0f, 1.0f }, { 1.0f, 1.0f } },
+//static const float32_t2 kIndex3x3[3][3] =
+//{
+//    { { -1.0f, -1.0f }, { 0.0f, -1.0f }, { 1.0f, -1.0f } },
+//    { { -1.0f, 0.0f }, { 0.0f, 0.0f }, { 1.0f, 0.0f } },
+//    { { -1.0f, 1.0f }, { 0.0f, 1.0f }, { 1.0f, 1.0f } },
 	   
-};
+//};
 
-static const float32_t2 kIndex5x5[5][5] =
-{
-    { { -2.0f, -2.0f }, { -1.0f, -2.0f }, { 0.0f, -2.0f }, { 1.0f, -2.0f }, { 2.0f, -2.0f } },
-    { { -2.0f, -1.0f }, { -1.0f, -1.0f }, { 0.0f, -1.0f }, { 1.0f, -1.0f }, { 2.0f, -1.0f } },
-    { { -2.0f, 0.0f }, { -1.0f, 0.0f }, { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 2.0f, 0.0f } },
-    { { -2.0f, 1.0f }, { -1.0f, 1.0f }, { 0.0f, 1.0f }, { 1.0f, 1.0f }, { 2.0f, 1.0f } },
-    { { -2.0f, 2.0f }, { -1.0f, 2.0f }, { 0.0f, 2.0f }, { 1.0f, 2.0f }, { 2.0f, 2.0f } }
+//static const float32_t2 kIndex5x5[5][5] =
+//{
+//    { { -2.0f, -2.0f }, { -1.0f, -2.0f }, { 0.0f, -2.0f }, { 1.0f, -2.0f }, { 2.0f, -2.0f } },
+//    { { -2.0f, -1.0f }, { -1.0f, -1.0f }, { 0.0f, -1.0f }, { 1.0f, -1.0f }, { 2.0f, -1.0f } },
+//    { { -2.0f, 0.0f }, { -1.0f, 0.0f }, { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 2.0f, 0.0f } },
+//    { { -2.0f, 1.0f }, { -1.0f, 1.0f }, { 0.0f, 1.0f }, { 1.0f, 1.0f }, { 2.0f, 1.0f } },
+//    { { -2.0f, 2.0f }, { -1.0f, 2.0f }, { 0.0f, 2.0f }, { 1.0f, 2.0f }, { 2.0f, 2.0f } }
 	   
-};
+//};
+
+////static const 
+
+
+
+
 static const float32_t PI = 3.14159265f;
 float gauss(float x, float y, float sigma)
 {
@@ -67,40 +83,27 @@ PixelShaderOutput main(VertexShaderOutput input)
 
      // kernelを求める weightは後で使う
     float32_t weight = 0.0f;
-    float32_t kernel5x5[5][5];
+    float32_t kernel[KenelSizeMax][KenelSizeMax];
+    float32_t2 kIndex[KenelSizeMax][KenelSizeMax];
   
-    for (int32_t x = 0; x < KenelSize; ++x)
-    {
-        for (int32_t y = 0; y < KenelSize; ++y)
-        {
-            kernel5x5[x][y] = gauss(kIndex5x5[x][y].x, kIndex5x5[x][y].y, 10000.0f);
-            weight += kernel5x5[x][y];
-        }
-    }
-    float32_t3 bloom = gTexture.Sample(gSampler, input.texcoord).rgb;
-    float32_t luminance = Luminance(bloom);
-
-    if (luminance >= 0.5f)
-    {
-        bloom = bloom * 2.0f;
-    }
-    else
-    {
-        bloom = 0.0f;
-    }
     float32_t3 bloomGauss = float32_t3(0.0f, 0.0f, 0.0f);
-    for (int32_t x1 = 0; x1 < KenelSize; ++x1)
+    for (int32_t x = 0; x < KenelSizeMax; ++x)
     {
-        for (int32_t y1 = 0; y1 < KenelSize; ++y1)
+        for (int32_t y = 0; y < KenelSizeMax; ++y)
         {
+            kIndex[x][y].x = 0.0f - ((KenelSizeMax - 1 ) / 2 - x);
+            kIndex[x][y].y = 0.0f - ((KenelSizeMax - 1 ) / 2 - y);
+            kernel[x][y] = gauss(kIndex[x][y].x, kIndex[x][y].y, gMaterial.deviation);
+            weight += kernel[x][y];
             // 3. 現在のtexcoordを算出
-            float32_t2 texcoord = input.texcoord + kIndex5x5[x1][y1] * uvStepSize;
+            float32_t2 texcoord = input.texcoord + kIndex[x][y] * uvStepSize;
             float32_t3 bloom = gTexture.Sample(gSampler, texcoord).rgb;
             float32_t luminance = Luminance(bloom);
 
-            if (luminance >= 0.5f)
+            if (luminance >= gMaterial.luminance)
             {
-                bloom = bloom * 3.0f;
+                bloom = bloom
+                * gMaterial.brightness;
             }
             else
             {
@@ -108,7 +111,7 @@ PixelShaderOutput main(VertexShaderOutput input)
             }
             
             // weightが大きいほど暗く表示するようにしている。最もシンプルな合成方法
-            bloomGauss += bloom * kernel5x5[x1][y1];
+            bloomGauss += bloom * kernel[x][y];
            
 
         }
