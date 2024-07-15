@@ -5,6 +5,7 @@
 
 struct DepthOutlineInfo {
 	Matrix4x4 projectionInverse;
+	float farClip;
 };
 class PostProcess;
 class DepthOutline : public IPostEffectState

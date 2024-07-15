@@ -21,7 +21,7 @@ void GameScene::Init()
 	postProcess_ = new PostProcess();
 	postProcess_->SetCamera(camera_->GetCamera());
 	postProcess_->Init();
-	IPostEffectState::SetEffectNo(PostEffectMode::kBloom);
+	IPostEffectState::SetEffectNo(PostEffectMode::kOutline);
 }
 
 void GameScene::Update()
@@ -30,6 +30,11 @@ void GameScene::Update()
 	
 	player_->Update();
 	camera_->Update();
+	float depthp = postProcess_->GetFarClip();
+	ImGui::Begin("Depth");
+	ImGui::SliderFloat("far", &depthp,0.1f,100.0f);
+	ImGui::End();
+	postProcess_->SerFarClip(depthp);
 	flooar_->Update();
 	item_->Update();
 	enemy_->Update();

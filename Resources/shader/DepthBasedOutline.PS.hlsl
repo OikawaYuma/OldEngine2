@@ -2,6 +2,7 @@
 struct Material
 {
     float32_t4x4 projectionInverse;
+    float32_t farClip;
 };
 
 
@@ -91,7 +92,18 @@ PixelShaderOutput main(VertexShaderOutput input)
     // 変化の長さをウェイトとして合成。ウェイトの決定方法も色々と考えられる。例えばdifference.xだけ使えば横方向のエッジが検出される
     float32_t weight = length(difference);
     // 差が小さい過ぎてわかりずらいので適当に6倍している。CBufferで調整パラメータとして送ったりすると良い
-    if (weight >= 0.5f)
+    
+    //if (weight >= 30.0f || (weight >= 0.5f && weight <= 1.0f))
+    //{
+    //    weight = saturate(weight);
+    //}
+    //else
+    //{
+    //    weight = 0.0f;
+
+    //}
+    float32_t ndcDepth1 = gDepthTexture.Sample(gSamplerPoint, input.texcoord);
+    if (length(difference) >= gMaterial.farClip&&ndcDepth1<=100.9f)
     {
         weight = saturate(weight);
     }

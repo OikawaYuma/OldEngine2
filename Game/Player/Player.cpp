@@ -10,7 +10,7 @@ void Player::Init()
 {
 	floorTex_ = TextureManager::GetInstance()->StoreTexture("Resources/white.png");
 	worldTransform_.Initialize();
-	worldTransform_.translation_.y = 1.0f;
+	worldTransform_.translation_.y = worldTransform_.scale_.y;
 	
 	ModelManager::GetInstance()->LoadModel("Resources/box/", "box.obj");
 	object_ = std::make_unique<Object3d>();
@@ -42,9 +42,13 @@ void Player::Update()
 	cameraToPlayerDistance_ = preCameraToPlayerDistance;
 
 	object_->Update();
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE) && !isJump_) {
-		isJump_ = true;
-		accel_ = 1;
+	jumpAgainTimer_++;
+	if (!isJump_) {
+		if (jumpAgainTimer_ >= 30) {
+			jumpAgainTimer_ = 0;
+			isJump_ = true;
+			jumpPower = 1;
+		}
 	}
 
 	if (Input::GetInstance()->PushKey(DIK_A)) {
@@ -69,19 +73,20 @@ void Player::Update()
 
 
 	if (isJump_) {
-		worldTransform_.translation_.y += accel_;
-		accel_ -= 0.04f;
+		worldTransform_.translation_.z += 1.0f;
+		worldTransform_.translation_.y += jumpPower;
+		jumpPower -= accel_;
 	}
 	if (worldTransform_.translation_.y <= worldTransform_.scale_.y && isJump_) {
-		worldTransform_.translation_.y = worldTransform_.scale_.y += 0.1f;
-		accel_ = 0.0f;
+		worldTransform_.translation_.y = worldTransform_.scale_.y + 0.2f;
+		jumpPower = 0.0f;
 		isJump_ = false;
 	}
-	worldTransform_.translation_.z += 1.0f;
+	
 	worldTransform_.UpdateMatrix();
 	camera_->SetTranslate({ 
 		worldTransform_.translation_.x + cameraToPlayerDistance_.x,
-		worldTransform_.translation_.y + cameraToPlayerDistance_.y, 
+		cameraToPlayerDistance_.y, 
 		worldTransform_.translation_.z + cameraToPlayerDistance_.z });
 	object_->SetWorldTransform(worldTransform_);
 }

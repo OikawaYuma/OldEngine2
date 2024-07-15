@@ -1,7 +1,7 @@
 #include "IPostEffectState.h"
 
 // タイトルシーンで初期化
-int IPostEffectState::effectNo_ = kBloom;
+int IPostEffectState::effectNo_ = kOutline;
 
 // 仮想デストラクタの定義
 // 純粋仮想関数化していないので、ここで定義できる

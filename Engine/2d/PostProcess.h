@@ -23,6 +23,7 @@
 #include "Camera.h"
 #include "IPostEffectState.h"
 #include "Effect/Bloom.h"
+#include "Effect/DepthOutline.h"
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"dxcompiler.lib")
@@ -63,6 +64,9 @@ public:
 	void SetvalueColor(Vector3 valueColor_) { valueColor = valueColor_; }
 	Camera* GetCamera() { return camera_; }
 	uint32_t GetNoisetex() { return noiseTexture_; }
+
+	float GetFarClip() { return depthOutlineInfo_.farClip; }
+	void SerFarClip(const float& farClip) { depthOutlineInfo_.farClip = farClip; }
 
 private:
 	// シーンを保持するメンバ変数
@@ -128,5 +132,6 @@ private:
 	Vector3 valueColor = { 0.2125f, 0.7154f, 0.0721f };
 
 	BloomInfo bloomInfo_ = { 10.0f,0.3f,1.0f, 1 };
+	DepthOutlineInfo depthOutlineInfo_;
 };
 

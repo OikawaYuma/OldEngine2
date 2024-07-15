@@ -20,7 +20,15 @@ private:
 	WorldTransform worldTransform_;
 	Camera* camera_ = nullptr;
 	bool isJump_ = false;
-	float accel_ = 0;
-	Vector3 cameraToPlayerDistance_{0.0f, 6.9f, -44.0f};
+	//float accel_ = 0.8f;
+	// ジャンプ力
+	float jumpPower = 1.0f;
+	// ジャンプ力の加速的変化
+	float accel_ = 0.1f;
+
+	uint32_t jumpAgainTimer_ = 0;
+
+
+	Vector3 cameraToPlayerDistance_{0.0f, 20.0f, -63.0f};
 };
 

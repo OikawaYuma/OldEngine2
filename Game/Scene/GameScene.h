@@ -2,9 +2,9 @@
 #include "IScene.h"
 #include "RailCamera/RailCamera.h"
 #include "Player/Player.h"
-#include "Floor.h"
-#include "Item.h"
-#include "Enemy.h"
+#include "Floor/Floor.h"
+#include "Item/Item.h"
+#include "Enemy/Enemy.h"
 #include "PostProcess.h"
 
 #include <vector>

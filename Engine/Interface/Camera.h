@@ -44,7 +44,7 @@ private:
 	float fovY_ = 0.45f;
 	float asepectRatio_ = float(WinAPI::kClientWidth_) / float(WinAPI::kClientHeight_);
 	float nearClip_ = 0.1f;
-	float farClip_ = 150.0f;
+	float farClip_ = 1000.0f;
 };
 
 
