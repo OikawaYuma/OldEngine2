@@ -1,4 +1,4 @@
-﻿#include "TextureManager.h"
+#include "TextureManager.h"
 #include "DirectXCommon.h"
 #include "SRVManager.h"
 #include "WinAPI.h"
@@ -37,7 +37,7 @@ int TextureManager::StoreTexture(const std::string& filePath) {
 	textureData.textureSrvHandleCPU = SRVManager::GetCPUDescriptorHandle(textureData.srvIndex);
 	textureData.textureSrvHandleGPU = SRVManager::GetGPUDescriptorHandle(textureData.srvIndex);
 
-	SRVManager::CreateSRVforTexture2D(textureData.srvIndex, textureData.resource.Get(), textureData.metaData.format, UINT(textureData.metaData.mipLevels));
+	SRVManager::CreateSRVforTexture2D(textureData);
 
 	return textureData.srvIndex;
 };
@@ -75,13 +75,24 @@ DirectX::ScratchImage TextureManager::LoadTexture(const std::string& filePath) {
 	////// テクスチャファイルを呼んでプログラムを使えるようにする
 	std::wstring filePathW = ConvertString(filePath);
 	// テクスチャファイルを呼んでプログラムを使えるようにする
-	 DirectX::ScratchImage image{};
+	DirectX::ScratchImage image{};
 	// エラー検知用変数
-	HRESULT hr_ = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
 
+	HRESULT hr_;
+	if (filePathW.ends_with(L".dds")) {// .ddsで終わっていたらddsとみなす。より安全な方法はいくらでもあるので余裕があれば対応すると良い
+		hr_ = DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
+	}
+	else {
+		hr_ = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	}
 	// ミップマップの作成
 	DirectX::ScratchImage mipImages{};
-	hr_ = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+	if (DirectX::IsCompressed(image.GetMetadata().format)) {// 圧縮フォーマットか調べる
+		mipImages = std::move(image);// 圧縮フォーマットならそのまま使うのでmoveする
+	}
+	else {
+		hr_ = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 4, mipImages);
+	}
 	assert(SUCCEEDED(hr_));
 	
 	// ミップマップ付きのデータを渡す

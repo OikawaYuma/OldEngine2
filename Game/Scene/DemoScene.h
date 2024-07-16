@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "IScene.h"
 #include "Triangle.h"
 #include "WorldTransform.h"
@@ -8,6 +8,7 @@
 #include "Object3d.h"
 #include "Model.h"
 #include "PostProcess.h"
+#include "Skybox/Skybox.h"
 
 class DemoScene : public IScene
 {
@@ -28,6 +29,7 @@ private:
 	//変数
 	uint32_t textureHandle;
 	uint32_t textureHandle2;
+	uint32_t textureHandle3;
 	Object3d* object3d = nullptr;
 	Object3d* object3d2 = nullptr;
 	Object3d* object3d3 = nullptr;
@@ -44,7 +46,7 @@ private:
 	
 	PostProcess* postProcess_ = nullptr;
 	std::vector<Object3d*> object3d_;
-
+	Skybox* skybox_ = nullptr;
 
 	float rotateSize_ = 1.057f;
 };
