@@ -1,22 +1,45 @@
 #pragma once
+#include <vector>
+
 #include "Object3d.h"
 #include "WorldTransform.h"
 #include "Camera.h"
-class Player
+#include "Sprite.h"
+
+#include "PlayerBullet/PlayerBullet.h"
+class Player:Collider
 {
 public:
 	void Init();
 	void Update();
 	void Draw(Camera* camera);
+
+	/// <summary>
+	/// UI描画
+	/// </summary>	
+	void DrawUI();
+
+	void Attack();
 public:// Getter
+	Vector3 GetReticleWorldPosition();
 
 public: // Setter
 	void SetCamera(Camera* camera) { camera_ = camera; };
 	//void SetParent(Matrix4x4 cameraMatWorld) { worldTransform_.parent_ = cameraMatWorld; }
+
+public: // Collision
+
+	// 衝突を検出したらコールバック関数
+	void OnCollision()override;
+	Vector3 GetWorldPosition() const override;
 	
 private:
-	std::unique_ptr<Object3d> object_;
+	std::unique_ptr<Object3d> object_ = nullptr;
+	std::unique_ptr<Sprite> reticle_ = nullptr;
+
+	std::vector<std::unique_ptr<PlayerBullet>> bullets_;
 	uint32_t floorTex_;
+	uint32_t playerReticleTex_;
 	WorldTransform worldTransform_;
 	Camera* camera_ = nullptr;
 	bool isJump_ = false;
@@ -30,5 +53,8 @@ private:
 
 
 	Vector3 cameraToPlayerDistance_{0.0f, 20.0f, -63.0f};
+
+	// 3Dレティクル用ワールドトランスフォーム
+	WorldTransform worldTransform3DReticle_;
 };
 

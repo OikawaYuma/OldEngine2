@@ -7,6 +7,7 @@ public:
 	void Init() override;
 	void Update()override;
 	void Draw()override;
+	void Draw2d()override;
 	void PostDraw()override;
 	void Release()override;
 	int GameClose()override;

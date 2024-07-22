@@ -13,6 +13,10 @@ void ClearScene::Draw()
 {
 }
 
+void ClearScene::Draw2d()
+{
+}
+
 void ClearScene::PostDraw()
 {
 }

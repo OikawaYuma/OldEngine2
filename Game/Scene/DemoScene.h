@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "IScene.h"
 #include "Triangle.h"
 #include "WorldTransform.h"
@@ -16,6 +16,7 @@ public:
 	void Update()override;
 	void Draw()override;
 	void PostDraw()override;
+	void Draw2d()override;
 	void Release()override;
 	int GameClose()override;
 

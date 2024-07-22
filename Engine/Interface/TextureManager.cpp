@@ -1,4 +1,4 @@
-﻿#include "TextureManager.h"
+#include "TextureManager.h"
 #include "DirectXCommon.h"
 #include "SRVManager.h"
 #include "WinAPI.h"
@@ -19,6 +19,7 @@ void TextureManager::Init()
 int TextureManager::StoreTexture(const std::string& filePath) {
 	// 読み込み済みテクスチャを検索
 	if (textureDatas_.contains(filePath)) {
+		return textureDatas_[filePath].srvIndex;
 	};
 	 // テクスチャ枚数上限チェック
 	//assert(SRVManager::kMaXSRVCount <= SRVManager::);
