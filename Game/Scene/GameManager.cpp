@@ -7,6 +7,7 @@
 #include "PSOAnimationModel.h"
 #include "PSOSprite.h"
 #include "PSOParticle.h"
+#include "PSOSkybox.h"
 #include "PSOPostEffect.h"
 #include "PostProcess.h"
 #include "Input.h"
@@ -82,6 +83,10 @@ int GameManager::Run() {
 
 	PSOParticle* psoParticle = PSOParticle::GatInstance();
 	psoParticle->CreatePipelineStateObject();
+
+	PSOSkybox* psoskybox = PSOSkybox::GatInstance();
+	psoskybox->CreatePipelineStateObject();
+
 
 	PSOPostEffect* pSOPostEffect = PSOPostEffect::GatInstance();
 	pSOPostEffect->Init();

@@ -184,6 +184,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\2d\PostEffect\Effect\Random.cpp" />
     <ClCompile Include="Game\RailCamera\RailCamera.cpp" />
     <ClCompile Include="Engine\3d\Skybox\Skybox.cpp" />
+    <ClCompile Include="Engine\Interface\PSO\PSOSkybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\2d\PostEffect\Effect\Bloom.h" />
@@ -267,6 +268,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\2d\PostEffect\Effect\Random.h" />
     <ClInclude Include="Game\RailCamera\RailCamera.h" />
     <ClInclude Include="Engine\3d\Skybox\Skybox.h" />
+    <ClInclude Include="Engine\Interface\PSO\PSOSkybox.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shader\Skybox.PS.hlsl">
@@ -373,6 +375,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <FileType>Document</FileType>
     </FxCompile>
+    <None Include="Resources\shader\Skybox.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </None>
     <None Include="Resources\shader\Object3d.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <FileType>Document</FileType>

@@ -84,10 +84,10 @@ void DemoScene::Update()
 
 	Vector3 camerattt = camera->GetRotate();
 	if (Input::GetInstance()->PushKey(DIK_A)) {
-		camerattt.x -= 0.8f;
+		camerattt.x -= 0.08f;
 	}
 	if (Input::GetInstance()->PushKey(DIK_D)) {
-		camerattt.x += 0.8f;
+		camerattt.x += 0.08f;
 	}
 	if (Input::GetInstance()->PushKey(DIK_W)) {
 		camerattt.y += 0.08f;

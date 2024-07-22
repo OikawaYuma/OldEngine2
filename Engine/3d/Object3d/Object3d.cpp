@@ -58,7 +58,7 @@ void Object3d::Draw(uint32_t texture, Camera* camera )
 		directXCommon->GetCommandList()->SetPipelineState(pso->GetProperty().graphicsPipelineState.Get());    //PSOを設定
 	}
 	else if (skybox_) {
-		PSO* pso = PSO::GatInstance();
+		PSOSkybox* pso = PSOSkybox::GatInstance();
 		//directionalLightData->direction =  Normalize(directionalLightData->direction);
 		directXCommon->GetCommandList()->SetGraphicsRootSignature(pso->GetProperty().rootSignature.Get());
 		directXCommon->GetCommandList()->SetPipelineState(pso->GetProperty().graphicsPipelineState.Get());    //PSOを設定

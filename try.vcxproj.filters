@@ -211,6 +211,7 @@
     <ClCompile Include="Game\RailCamera\RailCamera.cpp" />
     <ClCompile Include="Engine\2d\PostEffect\Effect\Bloom.cpp" />
     <ClCompile Include="Engine\3d\Skybox\Skybox.cpp" />
+    <ClCompile Include="Engine\Interface\PSO\PSOSkybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lib\utility\function.h">
@@ -408,6 +409,7 @@
     <ClInclude Include="Engine\Interface\Camera.h" />
     <ClInclude Include="Engine\2d\PostEffect\Effect\Bloom.h" />
     <ClInclude Include="Engine\3d\Skybox\Skybox.h" />
+    <ClInclude Include="Engine\Interface\PSO\PSOSkybox.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shader\Object3d.PS.hlsl">
@@ -460,6 +462,7 @@
       <Filter>Resources\shader</Filter>
     </None>
     <None Include="Resources\TL.json" />
+    <None Include="Resources\shader\Skybox.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="imgui\LICENSE.txt" />
