@@ -210,6 +210,8 @@
     <ClCompile Include="Game\Item\Item.cpp" />
     <ClCompile Include="Game\RailCamera\RailCamera.cpp" />
     <ClCompile Include="Engine\2d\PostEffect\Effect\Bloom.cpp" />
+    <ClCompile Include="Engine\3d\Skybox\Skybox.cpp" />
+    <ClCompile Include="Engine\Interface\PSO\PSOSkybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lib\utility\function.h">
@@ -406,6 +408,8 @@
     <ClInclude Include="Game\RailCamera\RailCamera.h" />
     <ClInclude Include="Engine\Interface\Camera.h" />
     <ClInclude Include="Engine\2d\PostEffect\Effect\Bloom.h" />
+    <ClInclude Include="Engine\3d\Skybox\Skybox.h" />
+    <ClInclude Include="Engine\Interface\PSO\PSOSkybox.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shader\Object3d.PS.hlsl">
@@ -441,6 +445,8 @@
     <FxCompile Include="Resources\shader\Random.PS.hlsl" />
     <FxCompile Include="Resources\shader\Fog.PS.hlsl" />
     <FxCompile Include="Resources\shader\Bloom.PS.hlsl" />
+    <FxCompile Include="Resources\shader\Skybox.VS.hlsl" />
+    <FxCompile Include="Resources\shader\Skybox.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui\imgui.ini">
@@ -456,6 +462,7 @@
       <Filter>Resources\shader</Filter>
     </None>
     <None Include="Resources\TL.json" />
+    <None Include="Resources\shader\Skybox.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="imgui\LICENSE.txt" />

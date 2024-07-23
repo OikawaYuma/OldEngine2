@@ -7,6 +7,7 @@
 #include<stdio.h>
 #include<time.h>
 
+
 void DemoScene::Init()
 {
 	camera = new Camera;
@@ -18,12 +19,14 @@ void DemoScene::Init()
 	input = Input::GetInstance();
 	textureHandle = TextureManager::StoreTexture("Resources/uvChecker.png");
 	textureHandle2 = TextureManager::StoreTexture("Resources/white.png");
+	textureHandle3 = TextureManager::StoreTexture("Resources/rostock_laage_airport_4k.dds");
 	demoSprite = new Sprite();
 	demoSprite->Init({ 0.0f,0.0f }, { 600.0f,600.0f }, { 0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f }, "Resources/uvChecker.png");
 	material.color = { 1.0f,1.0f,1.0f,1.0f };
 	material.enableLighting = false;
 	worldTransform.Initialize();
 	worldTransform.translation_.x = 0;
+	worldTransform.scale_ = { 100,100,100 };
 	worldTransform2.Initialize();
 	worldTransform2.translation_.x = 5;
 	worldTransform3.Initialize();
@@ -35,7 +38,8 @@ void DemoScene::Init()
 	postProcess_->SetCamera(camera);
 	postProcess_->Init();
 	
-	
+	skybox_ = new Skybox();
+	skybox_->Init(material);
 
 	ModelManager::GetInstance()->LoadAnimationModel("Resources/human", "sneakWalk.gltf");
 	ModelManager::GetInstance()->LoadAnimationModel("Resources/human", "walk.gltf");
@@ -48,7 +52,8 @@ void DemoScene::Init()
 	object3d3 = new Object3d();
 	object3d3->Init();
 	
-	object3d->SetAnimationModel("sneakWalk.gltf");
+	object3d->SetSkybox(skybox_);
+	//object3d->SetAnimationModel("sneakWalk.gltf");
 	object3d2->SetAnimationModel("walk.gltf");
 	object3d3->SetModel("box.obj");
     particle = new Particle();
@@ -77,19 +82,19 @@ void DemoScene::Update()
 	short leftStickX = joyState.Gamepad.sThumbLX;
 
 
-	Vector3 camerattt = camera->GetTranslate();
+	Vector3 camerattt = camera->GetRotate();
 	if (Input::GetInstance()->PushKey(DIK_A)) {
-		camerattt.x -= 0.8f;
+		camerattt.x -= 0.08f;
 	}
 	if (Input::GetInstance()->PushKey(DIK_D)) {
-		camerattt.x += 0.8f;
+		camerattt.x += 0.08f;
 	}
 	if (Input::GetInstance()->PushKey(DIK_W)) {
-		camerattt.y += 0.8f;
+		camerattt.y += 0.08f;
 	}if (Input::GetInstance()->PushKey(DIK_S)) {
-		camerattt.y -= 0.8f;
+		camerattt.y -= 0.08f;
 	}
-	camera->SetTranslate(camerattt);
+	camera->SetRotate(camerattt);
 	sceneTime++;
 	////カメラの更新
 	camera->Update();
@@ -206,7 +211,7 @@ void DemoScene::Draw()
 		(*itr)->Draw(textureHandle, camera);
 	}
 	//demoSprite->Draw(textureHandle,{1.0f,1.0f,1.0f,1.0f});
-	object3d->Draw(textureHandle,camera);
+	object3d->Draw(textureHandle3,camera);
 	object3d2->Draw(textureHandle2, camera);
 	object3d3->Draw(textureHandle2, camera);
 	particle->Draw(demoEmitter_, { worldTransform.translation_.x,worldTransform.translation_.y,worldTransform.translation_.z +5}, textureHandle, camera, demoRandPro, false);

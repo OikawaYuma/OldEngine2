@@ -3,7 +3,7 @@
 #include "ModelData.h"
 #include "MaterialData.h"
 #include "vertexData.h"
-
+#include "PSOSkybox.h"
 #include<Windows.h>
 #include<d3d12.h>
 #include<dxgi1_6.h>
@@ -19,6 +19,7 @@
 #include "AnimationModel.h"
 #include "Object3dCommon.h"
 #include <PSOAnimationModel.h>
+#include "Skybox/Skybox.h"
 
 
 #pragma comment(lib,"d3d12.lib")
@@ -36,6 +37,7 @@ public: // Setter
 	void SetModel(Model* model) { model_ = model; }
 	void SetModel(const std::string& filePath);
 	void SetAnimationModel(const std::string& filePath);
+	void SetSkybox(Skybox* skybox) { skybox_ = skybox; }
 	void SetWorldTransform(const WorldTransform& worldtransform) { worldTransform_ = worldtransform; };
 	void SetTransform(Transform transform);
 public: // Getter
@@ -49,7 +51,7 @@ private:
 	// RootSignature作成
 	Model* model_ = nullptr;
 	AnimationModel* animationModel_ = nullptr;
-
+	Skybox* skybox_ = nullptr;
 
 	/*移動用*/
 	// WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する

@@ -211,7 +211,7 @@ void DirectXCommon::ViewChange() {
 	commandQueue_->ExecuteCommandLists(1, commandLists);
 
 	// GPUとOSに画面の交換を行うよう通知する
- 	swapChain_->Present(1, 0);
+	swapChain_->Present(1, 0);
 
 	//Fenceの値を更新
 	fenceValue_++;
@@ -413,11 +413,11 @@ void DirectXCommon::RTVInit() {
 
 void DirectXCommon::CrateRenderTexture()
 {
-	renderindex_ = SRVManager::GetInstance()->Allocate();
-	SRVManager::GetInstance()->CreateSRVforTexture2D(
-		renderindex_, renderTextureResource_.Get(),
-		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-		1);
+	renderTexData_.srvIndex = SRVManager::GetInstance()->Allocate();
+	renderTexData_.resource = renderTextureResource_;
+	renderTexData_.metaData.mipLevels = 1;
+	renderTexData_.metaData.format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	SRVManager::GetInstance()->CreateSRVforTexture2D(renderTexData_);
 }
 
 void DirectXCommon::CreateFence() {
