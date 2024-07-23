@@ -33,6 +33,13 @@ void Player::Init()
 void Player::Update()
 {
 
+	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet) {
+		if (bullet->IsDead()) {
+			bullet.reset();
+			return true;
+		}
+		return false;
+		});
 	Vector3 camerarotate_ = camera_->GetRotate();
 	Vector3 preCameraToPlayerDistance = cameraToPlayerDistance_;
 	float cameraFarY = camera_->GetFarClip();
@@ -133,7 +140,7 @@ void Player::Update()
 	Attack();
 
 	// 弾更新
-	for (std::vector<std::unique_ptr<PlayerBullet>>::iterator itr = bullets_.begin(); itr != bullets_.end(); itr++) {
+	for (std::list<std::unique_ptr<PlayerBullet>>::iterator itr = bullets_.begin(); itr != bullets_.end(); itr++) {
 		(*itr)->Update();
 	}
 	if (isJump_) {
@@ -159,7 +166,7 @@ void Player::Update()
 void Player::Draw(Camera* camera)
 {
 	object_->Draw(floorTex_,camera);
-	for (std::vector<std::unique_ptr<PlayerBullet>>::iterator itr = bullets_.begin(); itr != bullets_.end(); itr++) {
+	for (std::list<std::unique_ptr<PlayerBullet>>::iterator itr = bullets_.begin(); itr != bullets_.end(); itr++) {
 		(*itr)->Draw(camera);
 	}
 }

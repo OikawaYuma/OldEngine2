@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <list>
 
 #include "Object3d.h"
 #include "WorldTransform.h"
@@ -37,7 +37,7 @@ private:
 	std::unique_ptr<Object3d> object_ = nullptr;
 	std::unique_ptr<Sprite> reticle_ = nullptr;
 
-	std::vector<std::unique_ptr<PlayerBullet>> bullets_;
+	std::list<std::unique_ptr<PlayerBullet>> bullets_;
 	uint32_t floorTex_;
 	uint32_t playerReticleTex_;
 	WorldTransform worldTransform_;
