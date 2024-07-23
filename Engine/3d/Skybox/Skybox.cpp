@@ -30,21 +30,24 @@ void Skybox::Init(const Material& material)
 	modelData_.vertices[10].position = { -1.0f, -1.0f, 1.0f, 1.0f };
 	modelData_.vertices[11].position = { 1.0f, -1.0f, 1.0f, 1.0f };
 	// 後ろ
-	modelData_.vertices[12].position = { -1.0f, 1.0f, -1.0f, 1.0f };
-	modelData_.vertices[13].position = { 1.0f, 1.0f, -1.0f, 1.0f };
-	modelData_.vertices[14].position = { -1.0f, -1.0f, -1.0f, 1.0f };
-	modelData_.vertices[15].position = { 1.0f, -1.0f, -1.0f, 1.0f };
+	modelData_.vertices[12].position = { 1.0f, 1.0f, -1.0f, 1.0f };
+	modelData_.vertices[13].position = { -1.0f, 1.0f, -1.0f, 1.0f };
+	modelData_.vertices[14].position = { 1.0f, -1.0f, -1.0f, 1.0f };
+	modelData_.vertices[15].position = { -1.0f, -1.0f, -1.0f, 1.0f };
 	// 上
 	modelData_.vertices[16].position = { -1.0f, 1.0f, -1.0f, 1.0f };
 	modelData_.vertices[17].position = { 1.0f, 1.0f, -1.0f, 1.0f };
 	modelData_.vertices[18].position = { -1.0f, 1.0f, 1.0f, 1.0f };
 	modelData_.vertices[19].position = { 1.0f, 1.0f, 1.0f, 1.0f };
 	// 下
-	modelData_.vertices[20].position = { -1.0f, -1.0f, -1.0f, 1.0f };
-	modelData_.vertices[21].position = { 1.0f, -1.0f, -1.0f, 1.0f };
-	modelData_.vertices[22].position = { -1.0f, -1.0f, 1.0f, 1.0f };
-	modelData_.vertices[23].position = { 1.0f, -1.0f, 1.0f, 1.0f };
+	modelData_.vertices[20].position = { 1.0f, -1.0f, -1.0f, 1.0f };
+	modelData_.vertices[21].position = { -1.0f, -1.0f, -1.0f, 1.0f };
+	modelData_.vertices[22].position = { 1.0f, -1.0f, 1.0f, 1.0f };
+	modelData_.vertices[23].position = { -1.0f, -1.0f, 1.0f, 1.0f };
 	
+
+
+
 	for (int i = 0; i < 24;++i) {
 		modelData_.vertices[i].normal = {};
 		modelData_.vertices[i].texcorrd = {};
@@ -145,7 +148,7 @@ void Skybox::Init(const Material& material)
 	indexDataSprite[33] = 22;
 	indexDataSprite[34] = 21;
 	indexDataSprite[35] = 23;
-
+	
 	//std::memcpy(indexDataSprite, modelData_, sizeof(uint32_t) * 12);
 	//worldTransform_.Initialize();
 }
@@ -178,6 +181,6 @@ void Skybox::Draw(uint32_t texture, const Material& material, const DirectionalL
 
 	DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
 	//directXCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(5, skinCluster_.paletteSrvHandle.second);
-	DirectXCommon::GetInstance()->GetCommandList()->DrawIndexedInstanced(24, 1, 0, 0, 0);
+	DirectXCommon::GetInstance()->GetCommandList()->DrawIndexedInstanced(36, 1, 0, 0, 0);
 	//directXCommon_->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 }
