@@ -8,7 +8,11 @@
 #include "TextureManager.h"
 
 
-Sprite::Sprite() {};
+Sprite::Sprite() {}
+Sprite::~Sprite()
+{
+}
+;
 
 void Sprite::Init(const Vector2& pos, const Vector2& size, const Vector2& anchorPoint, const Vector4& color, const std::string& filePath) {
 	sWinAPI = WinAPI::GetInstance();
@@ -30,7 +34,7 @@ void Sprite::Init(const Vector2& pos, const Vector2& size, const Vector2& anchor
 	vertexBufferViewSprite_.StrideInBytes = sizeof(VertexData);
 
 	vertexResourceSprite_->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataSprite_));
-
+	anchorPoint_ = anchorPoint;
 	float left = 0.0f - anchorPoint.x;
 	float right = 1.0f - anchorPoint.x;
 	float top = 0.0f - anchorPoint.y;
@@ -100,8 +104,8 @@ void Sprite::Init(const Vector2& pos, const Vector2& size, const Vector2& anchor
 
 };
 void Sprite::Update() {
-	/*transform_.translate = { position_.x,position_.y ,0.0f };
-	transform_.scale = { size_.x,size_.y,1.0f };*/
+	transform_.translate = { position_.x,position_.y ,0.0f };
+	//transform_.scale = { size_.x,size_.y,1.0f };
 	float left = 0.0f - anchorPoint_.x;
 	float right = 1.0f - anchorPoint_.x;
 	float top = 0.0f - anchorPoint_.y;

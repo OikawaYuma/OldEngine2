@@ -223,6 +223,10 @@ void DemoScene::PostDraw()
 	postProcess_->Draw();
 }
 
+void DemoScene::Draw2d()
+{
+}
+
 void DemoScene::Release() {
 }
 

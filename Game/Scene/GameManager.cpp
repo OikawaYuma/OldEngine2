@@ -152,6 +152,7 @@ int GameManager::Run() {
 		// フレームの終了
 		//スワップチェーン
 		sDirctX->ChangeDepthStatetoRender();
+		sceneArr_[currentSceneNo_]->Draw2d();
 		sDirctX->ViewChange();
 		sAudio->GetIXAudio().Reset();
 		// ESCキーが押されたらループを抜ける
