@@ -34,6 +34,8 @@ void PlayerBullet::Init(const Vector3& pos, const Vector3& velocity)
 
 void PlayerBullet::Update()
 {
+
+
 	if (--deathTimer_ <= 0) {
 		isDead_ = true;
 	}
