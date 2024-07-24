@@ -3,7 +3,9 @@
 #include "PSOProperty.h"
 
 struct FullScreenInfo {
-	float threshold;
+	float hue;
+	float saturation;
+	float value;
 };
 
 class FullScreen : public IPostEffectState

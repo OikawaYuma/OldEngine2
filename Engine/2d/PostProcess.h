@@ -24,6 +24,7 @@
 #include "IPostEffectState.h"
 #include "Effect/Bloom.h"
 #include "Effect/DepthOutline.h"
+#include "Effect/FullScreen.h"
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"dxcompiler.lib")
@@ -54,6 +55,9 @@ public:
 	float GetDeviation() { return deviation_; }
 	BloomInfo GetBloominfo() { return bloomInfo_; }
 	void SetBloomInfo(BloomInfo bloominfo) { bloomInfo_ = bloominfo; }
+
+	FullScreenInfo GetHSVInfo() { return hsvInfo_; }
+	void SetHSVInfo(FullScreenInfo hsvInfo) { hsvInfo_ = hsvInfo; }
 
 	Vector2 GetRandom() { return random_; }
 	void Setrandom(Vector2 rand ){ random_ = rand; }
@@ -133,5 +137,6 @@ private:
 
 	BloomInfo bloomInfo_ = { 10.0f,0.3f,1.0f, 1 };
 	DepthOutlineInfo depthOutlineInfo_;
+	FullScreenInfo hsvInfo_;
 };
 

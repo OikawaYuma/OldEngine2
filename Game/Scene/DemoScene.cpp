@@ -71,6 +71,8 @@ void DemoScene::Init()
 	demoEmitter_.transform.scale = { 0.5f,0.5f,0.5f };
 	particle->Initialize(demoEmitter_);
 	particle2->Initialize(demoEmitter_);
+
+	IPostEffectState::SetEffectNo(PostEffectMode::kFullScreen);
 }
 
 void DemoScene::Update()
@@ -109,10 +111,20 @@ void DemoScene::Update()
 	srand(unsigned int( currentTime));
 	int eye = rand() % 70 + 1;
 	Vector2 randaa = { float(eye),float(rand() %90 + 2)};
-	if (ImGui::TreeNode("Base")) {
-		if (ImGui::Button("Base On")) {
+	hsv = { 
+		postProcess_->GetHSVInfo().hue,
+		postProcess_->GetHSVInfo().saturation,
+		postProcess_->GetHSVInfo().value,
+	};
+	if (ImGui::TreeNode("Base(now hsv)")) {
+		if (ImGui::Button("Base On ")) {
 			IPostEffectState::SetEffectNo(PostEffectMode::kFullScreen);
 		}
+		
+
+		ImGui::SliderFloat("hue", &hsv.x, -1.0f, 1.0f);
+		ImGui::SliderFloat("saturation", &hsv.y, -1.0f, 1.0f);
+		ImGui::SliderFloat("value", &hsv.z, -1.0f, 1.0f);
 		ImGui::TreePop();
 	}
 
@@ -190,6 +202,7 @@ void DemoScene::Update()
 	postProcess_->SetThreshold(threa);
 	postProcess_->Setrandom(randaa);
 	postProcess_->SetBloomInfo(bloomInfo);
+	postProcess_->SetHSVInfo({hsv.x,hsv.y,hsv.z});
 	if (Input::GetInstance()->TriggerKey(DIK_A)) {
 		rotateSize_ = 0.0f;
 	}
@@ -211,7 +224,7 @@ void DemoScene::Draw()
 		(*itr)->Draw(textureHandle, camera);
 	}
 	//demoSprite->Draw(textureHandle,{1.0f,1.0f,1.0f,1.0f});
-	object3d->Draw(textureHandle3,camera);
+	//object3d->Draw(textureHandle3,camera);
 	object3d2->Draw(textureHandle2, camera);
 	object3d3->Draw(textureHandle2, camera);
 	particle->Draw(demoEmitter_, { worldTransform.translation_.x,worldTransform.translation_.y,worldTransform.translation_.z +5}, textureHandle, camera, demoRandPro, false);
