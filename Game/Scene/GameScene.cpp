@@ -21,7 +21,7 @@ void GameScene::Init()
 	postProcess_ = new PostProcess();
 	postProcess_->SetCamera(camera_->GetCamera());
 	postProcess_->Init();
-	IPostEffectState::SetEffectNo(PostEffectMode::kFullScreen);
+	IPostEffectState::SetEffectNo(PostEffectMode::kOutline);
 }
 
 void GameScene::Update()
@@ -42,11 +42,11 @@ void GameScene::Update()
 void GameScene::Draw()
 {
 	
-	
+	flooar_->Draw(camera_->GetCamera());
 	item_->Draw(camera_->GetCamera());
 	enemy_->Draw(camera_->GetCamera());
 	player_->Draw(camera_->GetCamera());
-	flooar_->Draw(camera_->GetCamera());
+	
 	
 }
 

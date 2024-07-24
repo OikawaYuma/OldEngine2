@@ -449,6 +449,7 @@
     <FxCompile Include="Resources\shader\Bloom.PS.hlsl" />
     <FxCompile Include="Resources\shader\Skybox.VS.hlsl" />
     <FxCompile Include="Resources\shader\Skybox.PS.hlsl" />
+    <FxCompile Include="Resources\shader\HSVFilter.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui\imgui.ini">

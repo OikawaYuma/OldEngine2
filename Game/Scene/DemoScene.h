@@ -48,7 +48,7 @@ private:
 	PostProcess* postProcess_ = nullptr;
 	std::vector<Object3d*> object3d_;
 	Skybox* skybox_ = nullptr;
-
+	Vector3 hsv = {1.0f,1.0f,1.0f};
 	float rotateSize_ = 1.057f;
 };
 

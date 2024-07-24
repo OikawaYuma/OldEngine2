@@ -102,8 +102,11 @@ PixelShaderOutput main(VertexShaderOutput input)
     //    weight = 0.0f;
 
     //}
+    float32_t ndcDepth = gDepthTexture.Sample(gSamplerPoint, input.texcoord);
+    float32_t4 viewSpace = mul(float32_t4(0.0f, 0.0f, ndcDepth, 1.0f), gMaterial.projectionInverse);
+    float32_t viewZ = viewSpace.z * rcp(viewSpace.w); // 同時座標系からデカルト座標系へ変換
     float32_t ndcDepth1 = gDepthTexture.Sample(gSamplerPoint, input.texcoord);
-    if (length(difference) >= gMaterial.farClip&&ndcDepth1<=100.9f)
+    if (length(difference) >= 0.5 && viewZ < 100)
     {
         weight = saturate(weight);
     }
