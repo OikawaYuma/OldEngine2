@@ -386,7 +386,7 @@ void AnimationModel::Update() {
 };
 
 
-void AnimationModel::Draw(uint32_t texture, const Material& material, const DirectionalLight& dire) {
+void AnimationModel::Draw(uint32_t texture, const Material& material, const DirectionalLight& dire, uint32_t mapTexture) {
 
 	PSOAnimationModel *pso_ = PSOAnimationModel::GatInstance();
 	vbvs[0] = vertexBufferView_;
@@ -419,6 +419,7 @@ void AnimationModel::Draw(uint32_t texture, const Material& material, const Dire
 
 	directXCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
 	directXCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(5, skinCluster_.paletteSrvHandle.second);
+	directXCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(6, SRVManager::GetGPUDescriptorHandle(mapTexture));
 	directXCommon_->GetCommandList()->DrawIndexedInstanced(static_cast<uint32_t>(modelData_.indices.size()), 1, 0, 0, 0);
 	//directXCommon_->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 }
