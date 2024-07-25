@@ -18,6 +18,9 @@ void GameScene::Init()
 	enemy_ = new Enemy();
 	enemy_->Init();
 
+	collisionManager_ = std::make_unique<CollisionManager>();
+	collisionManager_->SetGameScene(this);
+
 	postProcess_ = new PostProcess();
 	postProcess_->SetCamera(camera_->GetCamera());
 	postProcess_->Init();
@@ -38,6 +41,7 @@ void GameScene::Update()
 	flooar_->Update();
 	item_->Update();
 	enemy_->Update();
+	collisionManager_->CheckAllCollision();
 	}
 void GameScene::Draw()
 {

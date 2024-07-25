@@ -7,7 +7,7 @@
 #include "Sprite.h"
 
 #include "PlayerBullet/PlayerBullet.h"
-class Player:Collider
+class Player: public Collider
 {
 public:
 	void Init();
@@ -22,6 +22,8 @@ public:
 	void Attack();
 public:// Getter
 	Vector3 GetReticleWorldPosition();
+	// 弾リストを取得
+	const std::list<std::unique_ptr<PlayerBullet>>& Getbullet() const { return bullets_; }
 
 public: // Setter
 	void SetCamera(Camera* camera) { camera_ = camera; };

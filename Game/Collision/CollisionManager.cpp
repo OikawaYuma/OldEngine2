@@ -1,28 +1,28 @@
 #include "CollisionManager.h"
 #include "GameScene.h"
-//#include "Enemy.h"
-//#include "Player.h"
+#include "Enemy/Enemy.h"
+#include "Player.h"
 //#include "AxisIndicator.h"
 
 void CollisionManager::CheckAllCollision() {
 
-	//// 自弾リストの取得
-	//const std::list<PlayerBullet*>& playerBullets = player_->Getbullet();
+	// 自弾リストの取得
+	const std::list<std::unique_ptr<PlayerBullet>>& playerBullets = player_->Getbullet();
 
-	//// 敵弾リストの取得
+	// 敵弾リストの取得
 	//const std::list<EnemyBullet*>& enemyBullets = enemy_->Getbullet();
 
 	//std::list<Collider*> colliders_;
-	//// コライダーをリストに登録
-	//colliders_.push_back(player_);
+	// コライダーをリストに登録
+	colliders_.push_back(player_);
 	//colliders_.push_back(enemy_);
 
-	//for (PlayerBullet* bullet : playerBullets) {
-	//	colliders_.push_back(bullet);
-	//}
-	//for (EnemyBullet* bullet : enemyBullets) {
-	//	colliders_.push_back(bullet);
-	//}
+	for (std::unique_ptr<PlayerBullet> bullet : playerBullets) {
+		colliders_.push_back(bullet.get());
+	}
+	/*for (EnemyBullet* bullet : enemyBullets) {
+		colliders_.push_back(bullet);
+	}*/
 
 	// std::list<Collider*> colliders;
 	//  リスト内のペアを総当たり
