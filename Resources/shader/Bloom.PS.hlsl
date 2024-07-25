@@ -37,7 +37,7 @@ static const float32_t kPrewittHorizontalKernel[3][3] =
 static const float32_t kPrewittVerticalKernel[3][3] =
 {
     { -1.0f / 6.0f, -1.0f / 6.0f, -1.0f / 6.0f },
-    { 0.0f , 0.0f, 0.0f },
+    { 0.0f, 0.0f, 0.0f },
     { 1.0f / 6.0f, 1.0f / 6.0f, 1.0f / 6.0f },
     
 };
@@ -68,8 +68,8 @@ PixelShaderOutput main(VertexShaderOutput input)
     {
         for (int32_t y = 0; y < KenelSizeMax; ++y)
         {
-            kIndex[x][y].x = 0.0f - ((KenelSizeMax - 1 ) / 2 - x);
-            kIndex[x][y].y = 0.0f - ((KenelSizeMax - 1 ) / 2 - y);
+            kIndex[x][y].x = 0.0f - ((KenelSizeMax - 1) / 2 - x);
+            kIndex[x][y].y = 0.0f - ((KenelSizeMax - 1) / 2 - y);
             kernel[x][y] = gauss(kIndex[x][y].x, kIndex[x][y].y, gMaterial.deviation);
             weight += kernel[x][y];
             // 3. 現在のtexcoordを算出

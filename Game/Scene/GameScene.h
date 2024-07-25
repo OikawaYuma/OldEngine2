@@ -8,7 +8,7 @@
 #include "PostProcess.h"
 #include "CollisionManager.h"	
 #include <vector>
-#include <Player.h>
+#include <Player/Player.h>
 
 
 class GameScene :public IScene

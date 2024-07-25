@@ -1,7 +1,7 @@
 #include "CollisionManager.h"
 #include "GameScene.h"
 #include "Enemy/Enemy.h"
-#include "Player.h"
+#include "Player/Player.h"
 //#include "AxisIndicator.h"
 
 void CollisionManager::CheckAllCollision() {
@@ -17,9 +17,9 @@ void CollisionManager::CheckAllCollision() {
 	colliders_.push_back(player_);
 	//colliders_.push_back(enemy_);
 
-	for (std::unique_ptr<PlayerBullet> bullet : playerBullets) {
-		colliders_.push_back(bullet.get());
-	}
+	//for (std::unique_ptr<PlayerBullet> bullet : playerBullets) {
+	//	colliders_.push_back(bullet.get());
+	//}
 	/*for (EnemyBullet* bullet : enemyBullets) {
 		colliders_.push_back(bullet);
 	}*/
