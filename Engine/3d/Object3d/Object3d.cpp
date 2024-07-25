@@ -79,14 +79,14 @@ void Object3d::Draw(uint32_t texture, Camera* camera )
 	if (animationModel_) {
 		wvpData->WVP = worldViewProjectionMatrix;
 		wvpData->World = worldTransform_.matWorld_;
-		animationModel_->Draw(texture, { { 1.0f,1.0f,1.0f,1.0f },false
-			}, { { 1.0f,1.0,1.0,1.0f } ,{ 0.0f,-1.0f,0.0f },0.5f });
+		animationModel_->Draw(texture, { { 1.0f,1.0f,1.0f,1.0f },true
+			}, { { 1.0f,1.0,1.0,1.0f } ,{ 0.0f,-1.0f,0.0f },0.5f },mapTexture_);
 	}
 	else if (model_) {
 		wvpData->WVP =  worldViewProjectionMatrix;
 		wvpData->World = worldTransform_.matWorld_;
-		model_->Draw(texture,{ { 1.0f,1.0f,1.0f,1.0f },false
-			}, { { 1.0f,1.0,1.0,1.0f } ,{ 0.0f,-1.0f,0.0f },0.5f });
+		model_->Draw(texture,{ { 1.0f,1.0f,1.0f,1.0f },true
+			}, { { 1.0f,1.0,1.0,1.0f } ,{ 0.0f,-1.0f,0.0f },0.5f },mapTexture_);
 	}
 	else if (skybox_) {
 		wvpData->WVP = worldViewProjectionMatrix;

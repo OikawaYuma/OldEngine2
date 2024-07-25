@@ -397,7 +397,7 @@ void Model::Update() {
 };
 
 
-void Model::Draw(uint32_t texture, const Material& material, const DirectionalLight& dire) {
+void Model::Draw(uint32_t texture, const Material& material, const DirectionalLight& dire, uint32_t mapTexture) {
 
 	pso_ = PSO::GatInstance();
 	vbvs[0] = vertexBufferView_;
@@ -429,6 +429,8 @@ void Model::Draw(uint32_t texture, const Material& material, const DirectionalLi
 	directXCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, SRVManager::GetGPUDescriptorHandle(texture));
 
 	directXCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
+	directXCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(5, SRVManager::GetGPUDescriptorHandle(mapTexture));
+
 	//directXCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(5, skinCluster_.paletteSrvHandle.second);
 	directXCommon_->GetCommandList()->DrawIndexedInstanced(static_cast<uint32_t>(modelData_.indices.size()), 1, 0, 0, 0);
 	//directXCommon_->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);

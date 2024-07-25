@@ -40,6 +40,7 @@ public: // Setter
 	void SetSkybox(Skybox* skybox) { skybox_ = skybox; }
 	void SetWorldTransform(const WorldTransform& worldtransform) { worldTransform_ = worldtransform; };
 	void SetTransform(Transform transform);
+	void SetMapTexture(uint32_t maptexture) { mapTexture_ = maptexture; };
 public: // Getter
 	WorldTransform GetWorldTransform() { return worldTransform_; }
 	ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
@@ -66,5 +67,8 @@ private:
 	CameraForGPU* cameraForGPUData_;
 	// データを書き込む
 	WorldTransform worldTransform_;
+
+	// 環境マップ用Texture
+	uint32_t mapTexture_;
 };
 

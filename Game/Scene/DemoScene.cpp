@@ -23,12 +23,12 @@ void DemoScene::Init()
 	demoSprite = new Sprite();
 	demoSprite->Init({ 0.0f,0.0f }, { 600.0f,600.0f }, { 0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f }, "Resources/uvChecker.png");
 	material.color = { 1.0f,1.0f,1.0f,1.0f };
-	material.enableLighting = false;
+	material.enableLighting = true;
 	worldTransform.Initialize();
 	worldTransform.translation_.x = 0;
 	worldTransform.scale_ = { 100,100,100 };
 	worldTransform2.Initialize();
-	worldTransform2.translation_.x = 5;
+	worldTransform2.translation_.x = 0;
 	worldTransform3.Initialize();
 	worldTransform3.translation_.x = -5;
 	worldTransform.UpdateMatrix();
@@ -51,7 +51,8 @@ void DemoScene::Init()
 	object3d2->Init();
 	object3d3 = new Object3d();
 	object3d3->Init();
-	
+	object3d3->SetMapTexture(textureHandle3);
+	object3d2->SetMapTexture(textureHandle3);
 	object3d->SetSkybox(skybox_);
 	//object3d->SetAnimationModel("sneakWalk.gltf");
 	object3d2->SetAnimationModel("walk.gltf");
@@ -220,15 +221,15 @@ void DemoScene::Update()
 }
 void DemoScene::Draw()
 {
-	for (std::vector<Object3d*>::iterator itr = object3d_.begin(); itr != object3d_.end(); itr++) {
-		(*itr)->Draw(textureHandle, camera);
-	}
+	//for (std::vector<Object3d*>::iterator itr = object3d_.begin(); itr != object3d_.end(); itr++) {
+	//	(*itr)->Draw(textureHandle, camera);
+	//}
 	//demoSprite->Draw(textureHandle,{1.0f,1.0f,1.0f,1.0f});
-	//object3d->Draw(textureHandle3,camera);
+	object3d->Draw(textureHandle3,camera);
 	object3d2->Draw(textureHandle2, camera);
 	object3d3->Draw(textureHandle2, camera);
-	particle->Draw(demoEmitter_, { worldTransform.translation_.x,worldTransform.translation_.y,worldTransform.translation_.z +5}, textureHandle, camera, demoRandPro, false);
-	particle2->Draw(demoEmitter_, { worldTransform2.translation_.x,worldTransform2.translation_.y,worldTransform2.translation_.z +5}, textureHandle2, camera, demoRandPro, false);
+	//particle->Draw(demoEmitter_, { worldTransform.translation_.x,worldTransform.translation_.y,worldTransform.translation_.z +5}, textureHandle, camera, demoRandPro, false);
+	//particle2->Draw(demoEmitter_, { worldTransform2.translation_.x,worldTransform2.translation_.y,worldTransform2.translation_.z +5}, textureHandle2, camera, demoRandPro, false);
 }
 
 void DemoScene::PostDraw()
