@@ -6,7 +6,7 @@
 #include "Item/Item.h"
 #include "Enemy/Enemy.h"
 #include "PostProcess.h"
-
+#include "CollisionManager.h"	
 #include <vector>
 #include <Player.h>
 
@@ -28,6 +28,8 @@ private:
 	Item* item_ = nullptr;
 	Enemy* enemy_ = nullptr;
 	PostProcess* postProcess_ = nullptr;
+
+	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 	
 };
 
