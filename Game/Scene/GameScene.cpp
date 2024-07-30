@@ -1,26 +1,32 @@
 #include "GameScene.h"
-
+#include "Loder.h"
 #include "ImGuiCommon.h"
 void GameScene::Init()
 {
 	camera_ = std::make_unique<RailCamera>();
 	camera_->Init();
 	player_ = std::make_unique<Player>();
-	player_->Init();
+	floor_ = new Floor();
+	Loder::LoadJsonFile("Resources/json","stage",player_.get(),floor_);
 	player_->SetCamera(camera_->GetCamera());
 	
-	flooar_ = new Floor();
-	flooar_->Init();
 	
-	item_ = new Item();
-	item_->Init();
-
-	enemy_ = new Enemy();
-	enemy_->Init();
+	
+	for (int i = 0; i < 5; i++) {
+		Item* item = new Item();
+		item->Init({ 5.0f + i *-1.0f,1,100.0f + i * 40 });
+		item->SetPllayer(player_.get());
+		items_.push_back(item);
+	}
+	for (int i = 0; i < 5; i++) {
+		Enemy* enemy = new Enemy();
+		enemy->Init({ -2.0f + i,1,10.0f + i * 10 });
+		enemys_.push_back(enemy);
+	}
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 	collisionManager_->SetGameScene(this);
-
+	collisionManager_->SetPlayer(player_.get());
 	postProcess_ = new PostProcess();
 	postProcess_->SetCamera(camera_->GetCamera());
 	postProcess_->Init();
@@ -29,7 +35,13 @@ void GameScene::Init()
 
 void GameScene::Update()
 {
-	
+	enemys_.remove_if([](Enemy* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+		});
 	
 	player_->Update();
 	camera_->Update();
@@ -38,17 +50,25 @@ void GameScene::Update()
 	ImGui::SliderFloat("far", &depthp,0.1f,100.0f);
 	ImGui::End();
 	postProcess_->SerFarClip(depthp);
-	flooar_->Update();
-	item_->Update();
-	enemy_->Update();
+	floor_->Update();
+	for (std::list<Enemy*>::iterator itr = enemys_.begin(); itr != enemys_.end(); itr++) {
+		(*itr)->Update();
+	}
+	for (std::list<Item*>::iterator itr = items_.begin(); itr != items_.end(); itr++) {
+		(*itr)->Update();
+	}
 	collisionManager_->CheckAllCollision();
 	}
 void GameScene::Draw()
 {
 	
-	flooar_->Draw(camera_->GetCamera());
-	item_->Draw(camera_->GetCamera());
-	enemy_->Draw(camera_->GetCamera());
+	floor_->Draw(camera_->GetCamera());
+	for (std::list<Enemy*>::iterator itr = enemys_.begin(); itr != enemys_.end(); itr++) {
+		(*itr)->Draw(camera_->GetCamera());
+	}
+	for (std::list<Item*>::iterator itr = items_.begin(); itr != items_.end(); itr++) {
+		(*itr)->Draw(camera_->GetCamera());
+	}
 	player_->Draw(camera_->GetCamera());
 	
 	

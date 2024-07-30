@@ -10,7 +10,7 @@
 class Player: public Collider
 {
 public:
-	void Init();
+	void Init(const Vector3& translate);
 	void Update();
 	void Draw(Camera* camera);
 
@@ -23,11 +23,14 @@ public:
 public:// Getter
 	Vector3 GetReticleWorldPosition();
 	// 弾リストを取得
-	const std::list<std::unique_ptr<PlayerBullet>>& Getbullet() const { return bullets_; }
+	const std::list<PlayerBullet*>& Getbullet() const { return bullets_; }
+	Vector3 GetScale() { return worldTransform_.scale_; }
 
 public: // Setter
 	void SetCamera(Camera* camera) { camera_ = camera; };
 	//void SetParent(Matrix4x4 cameraMatWorld) { worldTransform_.parent_ = cameraMatWorld; }
+	// 主に他クラスでプレイヤーと当たり、サイズが大小するときに使う
+	void SetScale(const Vector3& nextScale) { worldTransform_.scale_ = nextScale; }
 
 public: // Collision
 
@@ -39,7 +42,7 @@ private:
 	std::unique_ptr<Object3d> object_ = nullptr;
 	std::unique_ptr<Sprite> reticle_ = nullptr;
 
-	std::list<std::unique_ptr<PlayerBullet>> bullets_;
+	std::list<PlayerBullet*> bullets_;
 	uint32_t floorTex_;
 	uint32_t playerReticleTex_;
 	WorldTransform worldTransform_;

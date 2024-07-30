@@ -6,11 +6,12 @@
 
 #include "ImGuiCommon.h"
 
-void Player::Init()
+void Player::Init(const Vector3& translate)
 {
 	floorTex_ = TextureManager::GetInstance()->StoreTexture("Resources/player.png");
 	playerReticleTex_ = TextureManager::GetInstance()->StoreTexture("Resources/Reticle.png");
 	worldTransform_.Initialize();
+	worldTransform_.translation_ = translate;
 	worldTransform_.translation_.y = worldTransform_.scale_.y;
 
 	ModelManager::GetInstance()->LoadModel("Resources/box/", "box.obj");
@@ -26,16 +27,18 @@ void Player::Init()
 		{ 1.0f, 1.0f, 1.0f, 1.0f},
 		"Resources/Reticle.png");
 	
-
+	SetCollisonAttribute(0b001);
+	SetCollisionMask(0b110);
+	worldTransform3DReticle_.Initialize();
 
 }
 
 void Player::Update()
 {
 
-	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet) {
+	bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->IsDead()) {
-			bullet.reset();
+			delete bullet;
 			return true;
 		}
 		return false;
@@ -46,6 +49,7 @@ void Player::Update()
 	ImGui::Begin("Player & camera");
 
 	ImGui::DragFloat3("playerScale", &worldTransform_.scale_.x);
+	ImGui::DragFloat3("playertranlate", &worldTransform_.translation_.x);
 
 	ImGui::DragFloat3("cameraRotate", &camerarotate_.x, 0.01f);
 	ImGui::DragFloat3("cameraTranslate", &preCameraToPlayerDistance.x, 0.01f);
@@ -140,7 +144,7 @@ void Player::Update()
 	Attack();
 
 	// 弾更新
-	for (std::list<std::unique_ptr<PlayerBullet>>::iterator itr = bullets_.begin(); itr != bullets_.end(); itr++) {
+	for (std::list<PlayerBullet*>::iterator itr = bullets_.begin(); itr != bullets_.end(); itr++) {
 		(*itr)->Update();
 	}
 	if (isJump_) {
@@ -166,7 +170,7 @@ void Player::Update()
 void Player::Draw(Camera* camera)
 {
 	object_->Draw(floorTex_,camera);
-	for (std::list<std::unique_ptr<PlayerBullet>>::iterator itr = bullets_.begin(); itr != bullets_.end(); itr++) {
+	for (std::list<PlayerBullet*>::iterator itr = bullets_.begin(); itr != bullets_.end(); itr++) {
 		(*itr)->Draw(camera);
 	}
 }
@@ -207,11 +211,11 @@ void Player::Attack()
 
 		//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 		// 弾を生成し、初期化
-		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
+		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Init(GetWorldPosition(), velocity);
 		//newBullet->SetParent(worldTransform_.parent_);
 		// 弾を登録する
-		bullets_.push_back(std::move(newBullet));
+		bullets_.push_back(newBullet);
 
 
 	}

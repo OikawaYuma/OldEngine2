@@ -2,27 +2,33 @@
 #include "GameScene.h"
 #include "Enemy/Enemy.h"
 #include "Player/Player.h"
+#include "Item/Item.h"
 //#include "AxisIndicator.h"
 
 void CollisionManager::CheckAllCollision() {
 
 	// 自弾リストの取得
-	const std::list<std::unique_ptr<PlayerBullet>>& playerBullets = player_->Getbullet();
+	const std::list<PlayerBullet*>& playerBullets = player_->Getbullet();
 
-	// 敵弾リストの取得
-	//const std::list<EnemyBullet*>& enemyBullets = enemy_->Getbullet();
+	 //敵弾リストの取得
+	const std::list<Enemy*>& enemyBullets = gameScene_->Getbullet();
 
-	//std::list<Collider*> colliders_;
+	const std::list<Item*>& items = gameScene_->GetItems();
+
+	std::list<Collider*> colliders_;
 	// コライダーをリストに登録
 	colliders_.push_back(player_);
 	//colliders_.push_back(enemy_);
 
-	//for (std::unique_ptr<PlayerBullet> bullet : playerBullets) {
-	//	colliders_.push_back(bullet.get());
-	//}
-	/*for (EnemyBullet* bullet : enemyBullets) {
+	for (PlayerBullet* bullet : playerBullets) {
 		colliders_.push_back(bullet);
-	}*/
+	}
+	for (Enemy* bullet : enemyBullets) {
+		colliders_.push_back(bullet);
+	}
+	for (Item* bullet : items) {
+		colliders_.push_back(bullet);
+	}
 
 	// std::list<Collider*> colliders;
 	//  リスト内のペアを総当たり
@@ -42,10 +48,25 @@ void CollisionManager::CheckAllCollision() {
 
 void CollisionManager::PushClider(Collider* collider)
 {
-	colliders_.push_back(collider);
+	//colliders_.push_back(collider);
 }
 
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
+	uint32_t num = 0;
+	for (int i = 0; i < 3; i++) {
+		uint32_t attriA = colliderA->GetCollisonAttribute() >> (collisionNum -i);
+		uint32_t attriB = colliderB->GetCollisonAttribute() >>(collisionNum - i);
+		uint32_t maskA = colliderA->GetCollisionMask()>> (collisionNum - i);
+		uint32_t maskB = colliderB->GetCollisionMask()>> (collisionNum - i);
+
+		if (attriA != maskB ||
+			attriB != maskA) {
+			num++;
+		};
+	}
+	if (num == collisionNum) {
+		return;
+	}
 	// 判定対象AとBの座標
 	Vector3 posA, posB;
 	int radiusA, radiusB;
@@ -69,10 +90,7 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 	  };*/
 
 	if (p2b <= r2r) {
-		if (colliderA->GetCollisonAttribute() != colliderB->GetCollisionMask() ||
-			colliderB->GetCollisonAttribute() != colliderA->GetCollisionMask()) {
-			return;
-		};
+		
 		// コライダーAの衝突時コールバックを呼び出す
 		colliderA->OnCollision();
 		// コライダーBの衝突時コールバックを呼び出す

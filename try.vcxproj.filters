@@ -197,7 +197,7 @@
     <ClCompile Include="Engine\2d\PostEffect\Effect\FullScreen.cpp" />
     <ClCompile Include="Engine\2d\PostEffect\Effect\Vignette.cpp" />
     <ClCompile Include="Engine\2d\PostEffect\Effect\GaussianBlur.cpp" />
-    <ClCompile Include="Engine\Interface\Loder.cpp" />
+    <ClCompile Include="Game\Utilty\Loder.cpp" />
     <ClCompile Include="Engine\Interface\PSO\PSOAnimationModel.cpp" />
     <ClCompile Include="Engine\3d\Model\AnimationModel.cpp" />
     <ClCompile Include="Engine\2d\PostEffect\Effect\GrayScale.cpp" />
@@ -412,6 +412,7 @@
     <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Engine\3d\Skybox\Skybox.h" />
     <ClInclude Include="Engine\Interface\PSO\PSOSkybox.h" />
+    <ClInclude Include="Game\Utilty\Loder.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shader\Object3d.PS.hlsl">

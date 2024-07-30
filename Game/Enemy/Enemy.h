@@ -2,28 +2,24 @@
 #include "Object3d.h"
 #include "WorldTransform.h"
 #include "Camera.h"
-class Enemy
+#include "Collider.h"
+class Enemy : public Collider
 {
 
 public:
-	void Init();
+	void Init(Vector3 translate);
 	void Update();
 	void Draw(Camera* camera);
 
+	// 衝突を検出したらコールバック関数
+	void OnCollision()override;
+	bool IsDead() { return isDead_; }
+	Vector3 GetWorldPosition() const override;
 private:
 	std::unique_ptr<Object3d> object_;
-	std::unique_ptr<Object3d> object_1;
-	std::unique_ptr<Object3d> object_2;
-	std::unique_ptr<Object3d> object_3;
-	std::unique_ptr<Object3d> object_4;
 	uint32_t floorTex_;
 	WorldTransform worldTransform_;
-	WorldTransform worldTransform_1;
-	WorldTransform worldTransform_2;
-	WorldTransform worldTransform_3;
-	WorldTransform worldTransform_4;
 
-
-
+	bool isDead_ = false;
 };
 
