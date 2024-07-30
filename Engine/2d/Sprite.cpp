@@ -71,6 +71,7 @@ void Sprite::Init(const Vector2& pos, const Vector2& size, const Vector2& anchor
 	// 単位行列を書き込んでおく
 	transformationMatrixDataSprite->WVP = MakeIdentity4x4();
 
+	position_ = pos;
 	// Transform変数の初期化
 	transform_ = { {size.x,size.y,1.0f},{0.0f,0.0f,0.0f},{pos.x,pos.y ,0.0f} };
 

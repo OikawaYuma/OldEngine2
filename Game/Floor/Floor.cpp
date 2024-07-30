@@ -2,13 +2,12 @@
 #include "TextureManager.h"
 #include "ModelManager.h"
 #include "Model.h"
-void Floor::Init()
+void Floor::Init(const Vector3& scale, const Vector3& translate)
 {
 	floorTex_ = TextureManager::GetInstance()->StoreTexture("Resources/uvChecker.png");
 	worldTransform_.Initialize();
-	worldTransform_.scale_.x = 1000.0f;
-	worldTransform_.scale_.z = 1000.0f;
-	worldTransform_.translation_.y = -1.0f;
+	worldTransform_.scale_ = scale;
+	worldTransform_.translation_ = translate;
 
 	//ModelManager::GetInstance()->LoadModel("Resources/box/", "box.obj");
 	object_ = std::make_unique<Object3d>();

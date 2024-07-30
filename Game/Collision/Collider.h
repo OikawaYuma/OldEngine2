@@ -7,10 +7,10 @@ public:
 
 	// Getter
 	// 半径を取得
-	int GetRadius() { return radius_; }
+	int GetRadius() { return radius_; } 
 
 	// Setter
-	void SetRadius(int radius) { radius_ = radius; }
+	void SetRadius(int radius) { radius_ = radius; } 
 
 	virtual void OnCollision() = 0;
 
@@ -35,5 +35,6 @@ private:
 	// 衝突マスク（相手）
 	uint32_t CollisionMask_ = 0xffffffff;
 
+	
 };
 

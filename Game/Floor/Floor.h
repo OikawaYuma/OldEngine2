@@ -6,7 +6,7 @@ class Floor
 {
 
 public:
-	void Init();
+	void Init(const Vector3& scale,const Vector3& translate);
 	void Update();
 	void Draw(Camera* camera);
 
