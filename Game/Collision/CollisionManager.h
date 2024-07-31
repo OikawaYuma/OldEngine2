@@ -22,6 +22,6 @@ private:
 
 	// 敵キャラ
 	Enemy* enemy_ = nullptr;
-	uint32_t collisionNum = 3;
+	uint32_t collisionNum = 2;
 };
 

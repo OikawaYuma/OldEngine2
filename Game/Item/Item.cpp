@@ -17,8 +17,8 @@ void Item::Init(const Vector3& translate)
 	object_->Init();
 	object_->SetModel("box.obj");
 
-	SetCollisonAttribute(0b100);
-	SetCollisionMask(0b001);
+	SetCollisonAttribute(0b0100);
+	SetCollisionMask(0b0001);
 }
 
 void Item::Update()
@@ -38,6 +38,7 @@ void Item::Draw(Camera* camera)
 
 void Item::OnCollision()
 {
+	isDead_ = true;
 	Vector3 preScale = player_->GetScale();
 	preScale = Add(preScale, { 0.1f,0.1f,0.1f });
 	player_->SetScale(preScale);

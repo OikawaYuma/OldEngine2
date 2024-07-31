@@ -27,8 +27,8 @@ void Player::Init(const Vector3& translate)
 		{ 1.0f, 1.0f, 1.0f, 1.0f},
 		"Resources/Reticle.png");
 	
-	SetCollisonAttribute(0b001);
-	SetCollisionMask(0b110);
+	SetCollisonAttribute(0b0001);
+	SetCollisionMask(0b0110);
 	worldTransform3DReticle_.Initialize();
 
 }
@@ -87,7 +87,7 @@ void Player::Update()
 		worldTransform_.scale_.z -= 0.05f;
 		worldTransform_.translation_.y += 0.05f;
 	}
-
+	worldTransform_.translation_.z += 0.1f;
 	reticle_->Update();
 
 	// スプライトの現在座標を取得

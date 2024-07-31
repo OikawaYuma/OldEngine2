@@ -26,10 +26,10 @@ void PlayerBullet::Init(const Vector3& pos, const Vector3& velocity)
 	worldtransform_.UpdateMatrix();
 	velocity_ = velocity;
 	// 衝突属性を設定
-	SetCollisonAttribute(0b001);
+	SetCollisonAttribute(0b1000);
 
 	// 衝突対象を自分の属性以外に設定
-	SetCollisionMask(0b110);
+	SetCollisionMask(0b0010);
 }
 
 void PlayerBullet::Update()

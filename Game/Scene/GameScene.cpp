@@ -15,12 +15,13 @@ void GameScene::Init()
 	for (int i = 0; i < 5; i++) {
 		Item* item = new Item();
 		item->Init({ 5.0f + i *-1.0f,1,100.0f + i * 40 });
-		item->SetPllayer(player_.get());
+		item->SetPlayer(player_.get());
 		items_.push_back(item);
 	}
 	for (int i = 0; i < 5; i++) {
 		Enemy* enemy = new Enemy();
 		enemy->Init({ -2.0f + i,1,10.0f + i * 10 });
+		enemy->SetPlayer(player_.get());
 		enemys_.push_back(enemy);
 	}
 
@@ -36,6 +37,13 @@ void GameScene::Init()
 void GameScene::Update()
 {
 	enemys_.remove_if([](Enemy* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+		});
+	items_.remove_if([](Item* bullet) {
 		if (bullet->IsDead()) {
 			delete bullet;
 			return true;
