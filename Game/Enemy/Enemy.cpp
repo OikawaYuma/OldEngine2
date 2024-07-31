@@ -1,5 +1,5 @@
 #include "Enemy.h"
-
+#include "Player/Player.h"
 void Enemy::Init(Vector3 translate)
 {
 	floorTex_ = TextureManager::GetInstance()->StoreTexture("Resources/Enemy.png");
@@ -40,6 +40,9 @@ void Enemy::Draw(Camera* camera)
 void Enemy::OnCollision()
 {
 	isDead_ = true;
+	Vector3 preScale = player_->GetScale();
+	preScale = Subtract(preScale, { 0.1f,0.1f,0.1f });
+	player_->SetScale(preScale);
 }
 
 Vector3 Enemy::GetWorldPosition() const
