@@ -14,7 +14,7 @@ public:
 	void Draw(Camera* camera);
 
 	// 衝突を検出したらコールバック関数
-	void OnCollision()override;
+	void OnCollision(uint32_t attri)override;
 	bool IsDead() { return isDead_; }
 	Vector3 GetWorldPosition() const override;
 public: //Setter

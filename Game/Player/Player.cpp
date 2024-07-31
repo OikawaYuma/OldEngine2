@@ -233,7 +233,7 @@ Vector3 Player::GetReticleWorldPosition()
 	return worldPos;
 }
 
-void Player::OnCollision()
+void Player::OnCollision(uint32_t attri)
 {
 }
 

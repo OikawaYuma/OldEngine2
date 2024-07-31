@@ -36,7 +36,7 @@ void Item::Draw(Camera* camera)
 	object_->Draw(floorTex_, camera);
 }
 
-void Item::OnCollision()
+void Item::OnCollision(uint32_t attri)
 {
 	isDead_ = true;
 	Vector3 preScale = player_->GetScale();

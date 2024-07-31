@@ -28,7 +28,7 @@ public:
 	void SetParent(const WorldTransform* parent);
 	bool IsDead()const { return isDead_; }
 	// 衝突を検出したらコールバック関数
-	void OnCollision()override;
+	void OnCollision(uint32_t attri)override;
 	Vector3 GetWorldPosition() const override;
 private:
 	WorldTransform worldtransform_;

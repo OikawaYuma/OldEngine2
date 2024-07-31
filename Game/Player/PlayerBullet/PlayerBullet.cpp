@@ -55,7 +55,7 @@ void PlayerBullet::SetParent(const WorldTransform* parent)
 	worldtransform_.parent_ = parent;
 }
 
-void PlayerBullet::OnCollision()
+void PlayerBullet::OnCollision(uint32_t attri)
 {
 	isDead_ = true;
 }

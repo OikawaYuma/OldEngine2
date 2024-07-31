@@ -14,7 +14,7 @@ void GameScene::Init()
 	
 	for (int i = 0; i < 5; i++) {
 		Item* item = new Item();
-		item->Init({ 5.0f + i *-1.0f,1,100.0f + i * 40 });
+		item->Init({ 5.0f + i *-1.0f,1,50.0f + i * 20 });
 		item->SetPlayer(player_.get());
 		items_.push_back(item);
 	}

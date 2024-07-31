@@ -12,7 +12,7 @@ public:
 	// Setter
 	void SetRadius(int radius) { radius_ = radius; } 
 
-	virtual void OnCollision() = 0;
+	virtual void OnCollision(uint32_t attri) = 0;
 
 	// ワールド座標を取得
 	virtual Vector3 GetWorldPosition() const = 0;

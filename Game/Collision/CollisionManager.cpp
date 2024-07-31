@@ -98,8 +98,8 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 	if (p2b <= r2r) {
 		
 		// コライダーAの衝突時コールバックを呼び出す
-		colliderA->OnCollision();
+		colliderA->OnCollision(colliderB->GetCollisonAttribute());
 		// コライダーBの衝突時コールバックを呼び出す
-		colliderB->OnCollision();
+		colliderB->OnCollision(colliderA->GetCollisonAttribute());
 	}
 };

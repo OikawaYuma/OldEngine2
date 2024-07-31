@@ -17,7 +17,7 @@ public:
 
 public:
 	// 衝突を検出したらコールバック関数
-	void OnCollision()override;
+	void OnCollision(uint32_t attri)override;
 
 public: // Getter
 

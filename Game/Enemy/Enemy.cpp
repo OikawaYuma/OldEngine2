@@ -37,12 +37,15 @@ void Enemy::Draw(Camera* camera)
 	object_->Draw(floorTex_, camera);
 }
 
-void Enemy::OnCollision()
+void Enemy::OnCollision(uint32_t attri)
 {
+
 	isDead_ = true;
-	Vector3 preScale = player_->GetScale();
-	preScale = Subtract(preScale, { 0.1f,0.1f,0.1f });
-	player_->SetScale(preScale);
+	if (attri == 0b0001) {
+		Vector3 preScale = player_->GetScale();
+		preScale = Subtract(preScale, { 0.1f,0.1f,0.1f });
+		player_->SetScale(preScale);
+	}
 }
 
 Vector3 Enemy::GetWorldPosition() const
