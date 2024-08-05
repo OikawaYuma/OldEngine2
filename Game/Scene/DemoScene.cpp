@@ -26,9 +26,9 @@ void DemoScene::Init()
 	material.enableLighting = true;
 	worldTransform.Initialize();
 	worldTransform.translation_.x = 0;
-	worldTransform.scale_ = { 100,100,100 };
+	worldTransform.scale_ = { 1,1,1 };
 	worldTransform2.Initialize();
-	worldTransform2.translation_.x = 0;
+	worldTransform2.translation_.x = 5;
 	worldTransform3.Initialize();
 	worldTransform3.translation_.x = -5;
 	worldTransform.UpdateMatrix();
@@ -51,10 +51,11 @@ void DemoScene::Init()
 	object3d2->Init();
 	object3d3 = new Object3d();
 	object3d3->Init();
+
 	object3d3->SetMapTexture(textureHandle3);
 	object3d2->SetMapTexture(textureHandle3);
-	object3d->SetSkybox(skybox_);
-	//object3d->SetAnimationModel("sneakWalk.gltf");
+	//object3d->SetSkybox(skybox_);
+	object3d->SetAnimationModel("sneakWalk.gltf");
 	object3d2->SetAnimationModel("walk.gltf");
 	object3d3->SetModel("box.obj");
     particle = new Particle();
@@ -217,6 +218,7 @@ void DemoScene::Update()
 	
 	object3d->Update();
 	object3d2->Update();
+	object3d3->Update();
 
 }
 void DemoScene::Draw()
@@ -225,9 +227,9 @@ void DemoScene::Draw()
 	//	(*itr)->Draw(textureHandle, camera);
 	//}
 	//demoSprite->Draw(textureHandle,{1.0f,1.0f,1.0f,1.0f});
-	object3d->Draw(textureHandle3,camera);
-	object3d2->Draw(textureHandle2, camera);
-	object3d3->Draw(textureHandle2, camera);
+	object3d->Draw(textureHandle,camera);
+	object3d2->Draw(textureHandle, camera);
+	object3d3->Draw(textureHandle, camera);
 	//particle->Draw(demoEmitter_, { worldTransform.translation_.x,worldTransform.translation_.y,worldTransform.translation_.z +5}, textureHandle, camera, demoRandPro, false);
 	//particle2->Draw(demoEmitter_, { worldTransform2.translation_.x,worldTransform2.translation_.y,worldTransform2.translation_.z +5}, textureHandle2, camera, demoRandPro, false);
 }

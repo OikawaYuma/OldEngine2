@@ -7,23 +7,11 @@ void GameScene::Init()
 	camera_->Init();
 	player_ = std::make_unique<Player>();
 	floor_ = new Floor();
-	Loder::LoadJsonFile("Resources/json","stage",player_.get(),floor_);
+	Loder::LoadJsonFile("Resources/json","stage",player_.get(),floor_,enemys_,items_);
 	player_->SetCamera(camera_->GetCamera());
 	
 	
 	
-	for (int i = 0; i < 5; i++) {
-		Item* item = new Item();
-		item->Init({ 5.0f + i *-1.0f,1,50.0f + i * 20 });
-		item->SetPlayer(player_.get());
-		items_.push_back(item);
-	}
-	for (int i = 0; i < 5; i++) {
-		Enemy* enemy = new Enemy();
-		enemy->Init({ -2.0f + i,1,10.0f + i * 10 });
-		enemy->SetPlayer(player_.get());
-		enemys_.push_back(enemy);
-	}
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 	collisionManager_->SetGameScene(this);

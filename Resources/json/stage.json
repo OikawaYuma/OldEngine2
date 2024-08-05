@@ -7,7 +7,7 @@
             "transform": {
                 "translation": [
                     0.0,
-                    0.0,
+                    100.0,
                     1.0
                 ],
                 "rotation": [
@@ -71,7 +71,7 @@
             "transform": {
                 "translation": [
                     0.0,
-                    0.0,
+                    1000.0,
                     -1.0
                 ],
                 "rotation": [
@@ -80,12 +80,144 @@
                     0.0
                 ],
                 "scaling": [
-                    1000.0,
+                    60.0,
                     1000.0,
                     1.0
                 ]
             },
             "file_name": "floor"
+        },
+        {
+            "type": "MESH",
+            "name": "敵",
+            "transform": {
+                "translation": [
+                    13.679999351501465,
+                    185.4199981689453,
+                    1.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "enemy"
+        },
+        {
+            "type": "MESH",
+            "name": "敵.001",
+            "transform": {
+                "translation": [
+                    -19.059999465942383,
+                    184.92999267578125,
+                    1.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "enemy"
+        },
+        {
+            "type": "MESH",
+            "name": "敵.002",
+            "transform": {
+                "translation": [
+                    -5.719999313354492,
+                    211.6999969482422,
+                    1.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "enemy"
+        },
+        {
+            "type": "MESH",
+            "name": "アイテム",
+            "transform": {
+                "translation": [
+                    6.7099995613098145,
+                    150.80999755859375,
+                    1.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "item"
+        },
+        {
+            "type": "MESH",
+            "name": "アイテム.001",
+            "transform": {
+                "translation": [
+                    -3.380000591278076,
+                    312.260009765625,
+                    1.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "item"
+        },
+        {
+            "type": "MESH",
+            "name": "アイテム.002",
+            "transform": {
+                "translation": [
+                    -12.960000991821289,
+                    133.44000244140625,
+                    1.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "item"
         }
     ]
 }

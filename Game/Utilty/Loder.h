@@ -5,10 +5,12 @@
 #include "Model.h"
 #include "Object3d.h"
 #include "Camera.h"
-
+#include <list>
 
 class Player;
+class Enemy;
 class Floor;
+class Item;
 class LevelData {
 public:
 	struct ObjectData {
@@ -26,7 +28,7 @@ class Loder
 {
 public:
 	static void LoadJsonFileBase(const std::string kDefaultBaseDirectory, const std::string fileName,std::vector<Object3d*>& objects,Camera* camera);
-	static void LoadJsonFile(const std::string kDefaultBaseDirectory, const std::string fileName,Player *player, Floor* floor);
+	static void LoadJsonFile(const std::string kDefaultBaseDirectory, const std::string fileName,Player *player, Floor* floor,std::list<Enemy*>& enemys,std::list<Item*>& items);
 };
 
 

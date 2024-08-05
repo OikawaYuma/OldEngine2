@@ -4,7 +4,7 @@
 #include "Model.h"
 void Floor::Init(const Vector3& scale, const Vector3& translate)
 {
-	floorTex_ = TextureManager::GetInstance()->StoreTexture("Resources/uvChecker.png");
+	floorTex_ = TextureManager::GetInstance()->StoreTexture("Resources/floor/floor.png");
 	worldTransform_.Initialize();
 	worldTransform_.scale_ = scale;
 	worldTransform_.translation_ = translate;
