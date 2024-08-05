@@ -6,8 +6,10 @@
 
 #include "Player/Player.h"
 #include "Floor/Floor.h"
+#include "Enemy/Enemy.h"
+#include "Item/Item.h"
 
-void Loder::LoadJsonFile(const std::string kDefaultBaseDirectory, const std::string fileName, Player* player,Floor* floor)
+void Loder::LoadJsonFile(const std::string kDefaultBaseDirectory, const std::string fileName, Player* player,Floor* floor, std::list<Enemy*>& enemys, std::list<Item*>& items)
 {
 	// 連結してフルパスを得る
 	const std::string fullpath = kDefaultBaseDirectory + "/" + fileName + ".json";
@@ -132,6 +134,19 @@ void Loder::LoadJsonFile(const std::string kDefaultBaseDirectory, const std::str
 		}
 		else if (objectData.filename.compare("floor")==0) {
 			floor->Init(objectData.transform.scale,objectData.transform.translate);
+		}
+		else if (objectData.filename.compare("enemy") == 0) {
+			Enemy* enemy = new Enemy();
+			enemy->SetPlayer(player);
+			enemy->Init(objectData.transform.translate);
+			enemys.push_back(enemy);
+		}
+
+		else if (objectData.filename.compare("item") == 0) {
+			Item* item = new Item();
+			item->SetPlayer(player);
+			item->Init(objectData.transform.translate);
+			items.push_back(item);
 		}
 
 	}
