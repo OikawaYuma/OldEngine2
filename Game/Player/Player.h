@@ -41,10 +41,13 @@ public: // Collision
 private:
 	std::unique_ptr<Object3d> object_ = nullptr;
 	std::unique_ptr<Sprite> reticle_ = nullptr;
+	std::unique_ptr<Sprite> hpUI_ = nullptr;
+	std::unique_ptr<Sprite> hpUIBlue_ = nullptr;
 
 	std::list<PlayerBullet*> bullets_;
 	uint32_t floorTex_;
 	uint32_t playerReticleTex_;
+	uint32_t playerHpUITex_;
 	WorldTransform worldTransform_;
 	Camera* camera_ = nullptr;
 	bool isJump_ = false;

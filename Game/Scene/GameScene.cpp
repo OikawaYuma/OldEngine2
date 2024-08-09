@@ -38,7 +38,15 @@ void GameScene::Update()
 		}
 		return false;
 		});
-	
+	// デスフラグの立った弾を削除
+	enemyBullets_.remove_if([](EnemyBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+		});
+
 	player_->Update();
 	camera_->Update();
 	float depthp = postProcess_->GetFarClip();
@@ -49,11 +57,54 @@ void GameScene::Update()
 	floor_->Update();
 	for (std::list<Enemy*>::iterator itr = enemys_.begin(); itr != enemys_.end(); itr++) {
 		(*itr)->Update();
+		// enemy->Fire();
+		if ((*itr)->GetFireTimer() >= (*itr)->kFireInterval) {
+			assert(player_);
+			// 弾の速度
+			const float kBulletSpeed = 1.0f;
+
+			Vector3 start = (*itr)->GetWorldPosition();
+			Vector3 end = player_->GetWorldPosition();
+
+			Vector3 diffVector;
+			diffVector.x = end.x - start.x;
+			diffVector.y = end.y - start.y;
+			diffVector.z = end.z - start.z;
+
+			diffVector = Normalize(diffVector);
+			diffVector.x *= kBulletSpeed;
+			diffVector.y *= kBulletSpeed;
+			diffVector.z *= kBulletSpeed;
+
+			Vector3 velocity(diffVector.x, diffVector.y, diffVector.z);
+
+			// 速度ベクトルを自機の向きに合わせて回転させる
+			velocity = TransformNormal(velocity, (*itr)->GetWorldTransform().matWorld_);
+
+			// 弾を生成し、初期化
+			EnemyBullet* newBullet = new EnemyBullet();
+			newBullet->Init((*itr)->GetWorldTransform().translation_, velocity);
+			newBullet->SetPlayer(player_.get());
+			// 弾を登録する
+			enemyBullets_.push_back(newBullet);
+			(*itr)->SetFireTimer(0);
+		}
 	}
 	for (std::list<Item*>::iterator itr = items_.begin(); itr != items_.end(); itr++) {
 		(*itr)->Update();
 	}
+	for (std::list<EnemyBullet*>::iterator itr = enemyBullets_.begin(); itr != enemyBullets_.end(); itr++) {
+		(*itr)->Update();
+	}
+
+	ImGui::Begin("EnemyBullet");
+	ImGui::Text("%d", enemyBullets_.size());
+	ImGui::End();
 	collisionManager_->CheckAllCollision();
+
+	if (player_->GetScale().x <= 0.0f) {
+		IScene::SetSceneNo(CLEAR);
+	}
 	}
 void GameScene::Draw()
 {
@@ -63,6 +114,9 @@ void GameScene::Draw()
 		(*itr)->Draw(camera_->GetCamera());
 	}
 	for (std::list<Item*>::iterator itr = items_.begin(); itr != items_.end(); itr++) {
+		(*itr)->Draw(camera_->GetCamera());
+	}
+	for (std::list<EnemyBullet*>::iterator itr = enemyBullets_.begin(); itr != enemyBullets_.end(); itr++) {
 		(*itr)->Draw(camera_->GetCamera());
 	}
 	player_->Draw(camera_->GetCamera());

@@ -8,7 +8,8 @@
 #include "PostProcess.h"
 #include "CollisionManager.h"	
 #include <vector>
-#include <Player/Player.h>
+#include "Enemy/EnemyBullet/EnemyBullet.h"
+
 
 
 class GameScene :public IScene
@@ -25,11 +26,14 @@ public:
 	// 弾リストを取得
 	const std::list<Enemy*>& Getbullet() const { return enemys_; }
 	const std::list<Item*>& GetItems() const { return items_; }
+	const std::list<EnemyBullet*>& GetEnemyBullets() const { return enemyBullets_; }
+
 private:
 
 	std::unique_ptr<RailCamera> camera_ = nullptr;
 	std::unique_ptr<Player> player_ = nullptr;
 	std::list<Enemy*> enemys_;
+	std::list<EnemyBullet*> enemyBullets_;
 	std::list<Item*> items_;
 	Floor* floor_ = nullptr;
 	PostProcess* postProcess_ = nullptr;

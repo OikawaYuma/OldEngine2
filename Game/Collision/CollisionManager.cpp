@@ -11,9 +11,11 @@ void CollisionManager::CheckAllCollision() {
 	const std::list<PlayerBullet*>& playerBullets = player_->Getbullet();
 
 	 //敵弾リストの取得
-	const std::list<Enemy*>& enemyBullets = gameScene_->Getbullet();
+	const std::list<Enemy*>& enemy = gameScene_->Getbullet();
 
 	const std::list<Item*>& items = gameScene_->GetItems();
+
+	const std::list<EnemyBullet*>& enemyBullets = gameScene_->GetEnemyBullets();
 
 	std::list<Collider*> colliders_;
 	// コライダーをリストに登録
@@ -23,10 +25,13 @@ void CollisionManager::CheckAllCollision() {
 	for (PlayerBullet* bullet : playerBullets) {
 		colliders_.push_back(bullet);
 	}
-	for (Enemy* bullet : enemyBullets) {
+	for (Enemy* bullet : enemy) {
 		colliders_.push_back(bullet);
 	}
 	for (Item* bullet : items) {
+		colliders_.push_back(bullet);
+	}
+	for (EnemyBullet* bullet : enemyBullets) {
 		colliders_.push_back(bullet);
 	}
 

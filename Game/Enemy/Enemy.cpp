@@ -23,6 +23,7 @@ void Enemy::Init(Vector3 translate)
 
 void Enemy::Update()
 {
+	FireTimer++;
 	object_->Update();
 	object_->SetWorldTransform(worldTransform_);
 	
@@ -58,4 +59,57 @@ Vector3 Enemy::GetWorldPosition() const
 	worldPos.z = worldTransform_.matWorld_.m[3][2];
 
 	return worldPos;
+}
+
+void Enemy::FazeInit()
+{
+	FireLoop();
+}
+
+void Enemy::Fire()
+{
+	// 自キャラの座標をコピー
+	Vector3 position = worldTransform_.translation_;
+
+	// 弾の速度
+	const float kBulletSpeed = -1.0f;
+	Vector3 velocity(0, kBulletSpeed, kBulletSpeed);
+
+	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+	// 弾を生成し、初期化
+	//EnemyBullet* newBullet = new EnemyBullet();
+	//newBullet->Init(worldTransform_.translation_, velocity);
+	//newBullet->SetPlayer(player_);
+
+	// 弾を登録する
+	//ullets_.push_back(newBullet);
+}
+
+void Enemy::FireLoop()
+{
+	Fire();
+	// 発車タイマーをリセットする
+	std::function<void(void)> callback = std::bind(&Enemy::FireLoop, this);
+
+	// 時限発動イベントを生成
+	TimedCall* timedCall = new TimedCall(callback, kFireInterval);
+
+	timedCalls_.push_back(timedCall);
+}
+
+void Enemy::FireCount()
+{
+	FireTimer--;
+}
+
+void Enemy::SetVelo(Vector3 velocity)
+{
+	velocity_.x = velocity.x;
+	velocity_.y = velocity.y;
+	velocity_.z = velocity.z;
+}
+
+void Enemy::SetFireTimer(int fireTimer)
+{
+	FireTimer = fireTimer;
 }

@@ -10,6 +10,7 @@ void Player::Init(const Vector3& translate)
 {
 	floorTex_ = TextureManager::GetInstance()->StoreTexture("Resources/player.png");
 	playerReticleTex_ = TextureManager::GetInstance()->StoreTexture("Resources/Reticle.png");
+	playerHpUITex_ = TextureManager::GetInstance()->StoreTexture("Resources/HpUI.png");
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = translate;
 	worldTransform_.translation_.y = worldTransform_.scale_.y;
@@ -26,6 +27,21 @@ void Player::Init(const Vector3& translate)
 		{ 0.5f , 0.5f },
 		{ 1.0f, 1.0f, 1.0f, 1.0f},
 		"Resources/Reticle.png");
+
+	hpUIBlue_ = std::make_unique<Sprite>();
+	hpUIBlue_->Init(
+		{ worldTransform_.scale_.x * 200.0f / 2.0f +50.0f ,25.0f },
+		{ worldTransform_.scale_.x * 200.0f, 50.0f },
+		{ 0.5f , 0.5f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		"Resources/player.png");
+	hpUI_ = std::make_unique<Sprite>();
+	hpUI_->Init(
+		{ 25.0f ,25.0f },
+		{ 50.0f, 50.0f },
+		{ 0.5f , 0.5f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		"Resources/HpUI.png");
 	
 	SetCollisonAttribute(0b0001);
 	SetCollisionMask(0b0110);
@@ -89,6 +105,7 @@ void Player::Update()
 	}
 	worldTransform_.translation_.z += 0.1f;
 	reticle_->Update();
+	
 
 	// スプライトの現在座標を取得
 	Vector2 spritePosition= reticle_->GetPosition();
@@ -164,6 +181,10 @@ void Player::Update()
 		cameraToPlayerDistance_.y, 
 		worldTransform_.translation_.z + cameraToPlayerDistance_.z });
 	object_->SetWorldTransform(worldTransform_);
+
+	hpUIBlue_->SetPosition({(worldTransform_.scale_.x * 200.0f / 2.0f) + 50.0f, 25.0f});
+	hpUIBlue_->SetSize({ worldTransform_.scale_.x * 200.0f ,50.0f});
+	hpUIBlue_->Update();
 	
 }
 
@@ -178,6 +199,9 @@ void Player::Draw(Camera* camera)
 void Player::DrawUI()
 {
 	reticle_->Draw(playerReticleTex_,{1.0f,1.0f,1.0f,1.0f});
+	hpUI_->Draw(playerHpUITex_,{ 1.0f,1.0f,1.0f,1.0f });
+	hpUIBlue_->Draw(floorTex_, { 1.0f,1.0f,1.0f,1.0f });
+
 }
 
 void Player::Attack()
