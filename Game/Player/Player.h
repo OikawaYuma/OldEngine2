@@ -19,7 +19,19 @@ public:
 	/// </summary>	
 	void DrawUI();
 
+	/// <summary>
+	/// 攻撃
+	/// </summary>
 	void Attack();
+
+	/// <summary>
+	/// 移動
+	/// </summary>
+	void Move();
+
+	void Jump();
+
+	void Aim();
 public:// Getter
 	Vector3 GetReticleWorldPosition();
 	// 弾リストを取得

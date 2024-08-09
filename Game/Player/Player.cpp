@@ -77,51 +77,16 @@ void Player::Update()
 
 	object_->Update();
 	
-	jumpAgainTimer_++;
-	if (!isJump_) {
-		if (jumpAgainTimer_ >= 30) {
-			jumpAgainTimer_ = 0;
-			isJump_ = true;
-			jumpPower = 1;
-		}
-	}
+	
 
-	if (Input::GetInstance()->PushKey(DIK_A)) {
-		worldTransform_.translation_.x -= 0.5f;
-	}
-	if (Input::GetInstance()->PushKey(DIK_D)) {
-		worldTransform_.translation_.x += 0.5f;
-	}
-
-	if (Input::GetInstance()->PushKey(DIK_P)) {
-		worldTransform_.scale_ = Add(worldTransform_.scale_, {0.05f,0.05f,0.05f});
-		worldTransform_.translation_.y += 0.05f;
-	}
-	if (Input::GetInstance()->PushKey(DIK_O)) {
-		worldTransform_.scale_.x -= 0.05f;
-		worldTransform_.scale_.y -= 0.05f;
-		worldTransform_.scale_.z -= 0.05f;
-		worldTransform_.translation_.y += 0.05f;
-	}
-	worldTransform_.translation_.z += 0.1f;
+	Move();
+	
+	Jump();
 	reticle_->Update();
 	
 
-	// スプライトの現在座標を取得
-	Vector2 spritePosition= reticle_->GetPosition();
-	if (Input::GetInstance()->PushKey(DIK_RIGHTARROW)) {
-		spritePosition.x += 5;
-	}
-	if (Input::GetInstance()->PushKey(DIK_LEFTARROW)) {
-		spritePosition.x -= 5;
-	}
-	if (Input::GetInstance()->PushKey(DIK_UPARROW)) {
-		spritePosition.y -= 5;
-	}
-	if (Input::GetInstance()->PushKey(DIK_DOWNARROW)) {
-		spritePosition.y += 5;
-	}
-	reticle_->SetPosition(spritePosition);
+	Aim();
+	
 
 	// ビューポート
 	Matrix4x4 matViewport =
@@ -160,20 +125,12 @@ void Player::Update()
 
 	Attack();
 
+	
 	// 弾更新
 	for (std::list<PlayerBullet*>::iterator itr = bullets_.begin(); itr != bullets_.end(); itr++) {
 		(*itr)->Update();
 	}
-	if (isJump_) {
-	//	worldTransform_.translation_.z += 1.0f;
-		worldTransform_.translation_.y += jumpPower;
-		jumpPower -= accel_;
-	}
-	if (worldTransform_.translation_.y <= worldTransform_.scale_.y && isJump_) {
-		worldTransform_.translation_.y = worldTransform_.scale_.y + 0.2f;
-		jumpPower = 0.0f;
-		isJump_ = false;
-	}
+	
 	
 	worldTransform_.UpdateMatrix();
 	camera_->SetTranslate({ 
@@ -243,6 +200,88 @@ void Player::Attack()
 
 
 	}
+}
+
+void Player::Move()
+{
+
+	if (Input::GetInstance()->GetJoystickState()) {
+		worldTransform_.translation_.x += (float)Input::GetInstance()->GetJoyState().Gamepad.sThumbLX / SHRT_MAX * 0.4f;
+	}
+	else {
+		if (Input::GetInstance()->PushKey(DIK_A)) {
+			worldTransform_.translation_.x -= 0.5f;
+		}
+		if (Input::GetInstance()->PushKey(DIK_D)) {
+			worldTransform_.translation_.x += 0.5f;
+		}
+	}
+
+	worldTransform_.translation_.z += 0.1f;
+}
+
+void Player::Jump()
+{
+	// 自動ジャンプ
+
+	/*jumpAgainTimer_++;
+	if (!isJump_) {
+		if (jumpAgainTimer_ >= 30) {
+			jumpAgainTimer_ = 0;
+			isJump_ = true;
+			jumpPower = 1;
+		}
+	}*/
+	// 手動ジャンプ
+
+
+	
+
+	if (!isJump_ &&Input::GetInstance()->TriggerKey(DIK_O)) {
+		
+		isJump_ = true;
+		jumpPower = 1;
+		
+	}
+
+	if (isJump_) {
+		//	worldTransform_.translation_.z += 1.0f;
+		worldTransform_.translation_.y += jumpPower;
+		jumpPower -= accel_;
+	}
+	if (worldTransform_.translation_.y <= worldTransform_.scale_.y && isJump_) {
+		worldTransform_.translation_.y = worldTransform_.scale_.y + 0.2f;
+		jumpPower = 0.0f;
+		isJump_ = false;
+	}
+}
+
+void Player::Aim()
+{
+	// スプライトの現在座標を取得
+	Vector2 spritePosition = reticle_->GetPosition();
+	Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_A);
+	// ゲームパッド状態取得
+	if (Input::GetInstance()->GetJoystickState()) {
+		spritePosition.x += (float)Input::GetInstance()->GetJoyState().Gamepad.sThumbRX / SHRT_MAX * 8.0f;
+		spritePosition.y -= (float)Input::GetInstance()->GetJoyState().Gamepad.sThumbRY / SHRT_MAX * 8.0f;
+	}
+	else {
+		
+		if (Input::GetInstance()->PushKey(DIK_RIGHTARROW)) {
+			spritePosition.x += 5;
+		}
+		if (Input::GetInstance()->PushKey(DIK_LEFTARROW)) {
+			spritePosition.x -= 5;
+		}
+		if (Input::GetInstance()->PushKey(DIK_UPARROW)) {
+			spritePosition.y -= 5;
+		}
+		if (Input::GetInstance()->PushKey(DIK_DOWNARROW)) {
+			spritePosition.y += 5;
+		}
+	}
+	reticle_->SetPosition(spritePosition);
 }
 
 Vector3 Player::GetReticleWorldPosition()

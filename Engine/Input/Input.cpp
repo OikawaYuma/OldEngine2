@@ -44,12 +44,16 @@ void Input::Initialize() {
 		}
 	}
 
+	ZeroMemory(&preJoyState, sizeof(XINPUT_STATE));
+	ZeroMemory(&joyState, sizeof(XINPUT_STATE));
 
 }
 
 void Input::Update() {
 	// 前回のキー入力を保存
 	memcpy(preKeys, keys, sizeof(keys));
+	// 前回のキー入力を保存
+	memcpy(&preJoyState, &joyState, sizeof(joyState));
 
 	// キーボード情報の取得開始
 	keyboard->Acquire();
@@ -65,14 +69,21 @@ bool Input::PushKey(BYTE keyNumber)
 	return false;
 }
 
-bool Input::GetJoystickState(XINPUT_STATE& state)
+bool Input::GetJoystickState()
 {
-	ZeroMemory(&state, sizeof(XINPUT_STATE));
-
+	
 	// コントローラーの状態を取得
-	result = XInputGetState(0, &state);
+	result = XInputGetState(0, &joyState);
 
 	if (result == ERROR_SUCCESS) {
+		return true;
+	}
+	return false;
+}
+
+bool Input::TriggerJoyButton(uint32_t button)
+{
+	if ((joyState.Gamepad.wButtons & button) && ((preJoyState.Gamepad.wButtons & button) == 0)) {
 		return true;
 	}
 	return false;

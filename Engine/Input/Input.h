@@ -33,8 +33,12 @@ public:
 	bool PushKey(BYTE keyNumber);
 
 	bool TriggerKey(BYTE keyNumber);
+	
+	XINPUT_STATE GetJoyState() { return joyState; };
 
-	bool GetJoystickState(XINPUT_STATE& state);
+	bool GetJoystickState();
+
+	bool TriggerJoyButton(uint32_t button);
 
 	// namespace省略
 	template <class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -44,6 +48,9 @@ private:
 	ComPtr <IDirectInputDevice8> keyboard = nullptr;
 	BYTE keys[256];
 	BYTE preKeys[256];
+
+	XINPUT_STATE joyState;
+	XINPUT_STATE preJoyState;
 	
 };
 
