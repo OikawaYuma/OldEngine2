@@ -81,6 +81,14 @@ bool Input::GetJoystickState()
 	return false;
 }
 
+bool Input::PushJoyButton(uint32_t button)
+{
+	if (joyState.Gamepad.wButtons & button) {
+		return true;
+	}
+	return false;
+}
+
 bool Input::TriggerJoyButton(uint32_t button)
 {
 	if ((joyState.Gamepad.wButtons & button) && ((preJoyState.Gamepad.wButtons & button) == 0)) {

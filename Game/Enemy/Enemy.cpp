@@ -43,9 +43,10 @@ void Enemy::OnCollision(uint32_t attri)
 
 	isDead_ = true;
 	if (attri == 0b0001) {
-		Vector3 preScale = player_->GetScale();
-		preScale = Subtract(preScale, { 0.1f,0.1f,0.1f });
-		player_->SetScale(preScale);
+		float playerHP = player_->GetHP();
+		playerHP -= 0.1f;
+		player_->SetHP(playerHP);
+
 	}
 }
 

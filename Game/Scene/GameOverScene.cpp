@@ -1,16 +1,16 @@
-#include "TitleScene.h"
+#include "GameOverScene.h"
+
 #include "ImGuiCommon.h"
 #include "TextureManager.h"
 #include "Input.h"
-
-void TitleScene::Init()
+void GameOverScene::Init()
 {
 	sprite = new Sprite();
 	sprite->Init(
-		{0, 0}, { 1280, 720 },
-		{0,0},{1.0f,1.0f,1.0,1.0},
+		{ 0, 0 }, { 1280, 720 },
+		{ 0,0 }, { 1.0f,1.0f,1.0,1.0 },
 		"Resources/noise1.png");
-	titleTex_ = TextureManager::StoreTexture("Resources/title.png");
+	titleTex_ = TextureManager::StoreTexture("Resources/gameOver.png");
 
 	camera_ = std::make_unique<Camera>();
 	camera_->Initialize();
@@ -19,40 +19,40 @@ void TitleScene::Init()
 	postProcess_->Init();
 	IPostEffectState::SetEffectNo(PostEffectMode::kBloom);
 }
-
-void TitleScene::Update()
+void GameOverScene::Update()
 {
 	if (Input::GetInstance()->GetJoystickState()) {}
 	if (Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_A)) {
-		IScene::SetSceneNo(STAGE);
+		IScene::SetSceneNo(TITLE);
 	}
-	else if(Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-		IScene::SetSceneNo(STAGE);
+	else if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		IScene::SetSceneNo(TITLE);
 	}
-	
+
 	postProcess_->Update();
-	
+
 }
-void TitleScene::Draw()
+void GameOverScene::Draw()
 {
 	sprite->Draw(titleTex_, { 1.0f,1.0f,1.0,1.0 });
 }
 
-void TitleScene::PostDraw()
+void GameOverScene::Draw2d()
+{
+}
+
+void GameOverScene::PostDraw()
 {
 	postProcess_->Draw();
 }
 
-void TitleScene::Draw2d()
-{
-}
-
-void TitleScene::Release() {
+void GameOverScene::Release() {
 
 }
+
 
 // ゲームを終了
-int TitleScene::GameClose()
+int GameOverScene::GameClose()
 {
 	return false;
 }

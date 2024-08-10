@@ -19,13 +19,16 @@ void GameScene::Init()
 	postProcess_ = new PostProcess();
 	postProcess_->SetCamera(camera_->GetCamera());
 	postProcess_->Init();
-	IPostEffectState::SetEffectNo(PostEffectMode::kOutline);
+	IPostEffectState::SetEffectNo(PostEffectMode::kBloom);
+
+	destroyCount_ = 0;
 }
 
 void GameScene::Update()
 {
-	enemys_.remove_if([](Enemy* bullet) {
+	enemys_.remove_if([=](Enemy* bullet) {
 		if (bullet->IsDead()) {
+			destroyCount_++;
 			delete bullet;
 			return true;
 		}
@@ -47,6 +50,9 @@ void GameScene::Update()
 		return false;
 		});
 
+	if (destroyCount_>=3) {
+		IScene::SetSceneNo(CLEAR);
+	}
 	player_->Update();
 	camera_->Update();
 	float depthp = postProcess_->GetFarClip();
@@ -102,8 +108,8 @@ void GameScene::Update()
 	ImGui::End();
 	collisionManager_->CheckAllCollision();
 
-	if (player_->GetScale().x <= 0.0f) {
-		IScene::SetSceneNo(CLEAR);
+	if (player_->GetHP()<= 0.0f) {
+		IScene::SetSceneNo(GAMEOVER);
 	}
 	}
 void GameScene::Draw()

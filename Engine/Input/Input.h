@@ -4,6 +4,7 @@
 #include <cassert>
 #include <wrl.h>
 #include <Xinput.h>
+#include <stdint.h>
 //#include <Xinput.h>
 
 #pragma comment(lib, "Xinput.lib")
@@ -37,6 +38,8 @@ public:
 	XINPUT_STATE GetJoyState() { return joyState; };
 
 	bool GetJoystickState();
+
+	bool PushJoyButton(uint32_t button);
 
 	bool TriggerJoyButton(uint32_t button);
 

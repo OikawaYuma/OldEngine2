@@ -6,19 +6,25 @@
 
 #include "ImGuiCommon.h"
 
-void Player::Init(const Vector3& translate)
+void Player::Init(const Vector3& translate, const std::string filename)
 {
 	floorTex_ = TextureManager::GetInstance()->StoreTexture("Resources/player.png");
 	playerReticleTex_ = TextureManager::GetInstance()->StoreTexture("Resources/Reticle.png");
 	playerHpUITex_ = TextureManager::GetInstance()->StoreTexture("Resources/HpUI.png");
+
+	hp_ = 1.0f;
+
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = translate;
 	worldTransform_.translation_.y = worldTransform_.scale_.y;
+	// HPを元に基準となる大きさを決定する
+	worldTransform_.scale_ = {hp_,hp_,hp_};
+	SetRadius(hp_);
 
-	ModelManager::GetInstance()->LoadModel("Resources/box/", "box.obj");
+	//ModelManager::GetInstance()->LoadModel("Resources/box/", "box.obj");
 	object_ = std::make_unique<Object3d>();
 	object_->Init();
-	object_->SetModel("box.obj");
+	object_->SetModel(filename + ".obj");
 
 	reticle_ = std::make_unique<Sprite>();
 	reticle_->Init(
@@ -30,8 +36,8 @@ void Player::Init(const Vector3& translate)
 
 	hpUIBlue_ = std::make_unique<Sprite>();
 	hpUIBlue_->Init(
-		{ worldTransform_.scale_.x * 200.0f / 2.0f +50.0f ,25.0f },
-		{ worldTransform_.scale_.x * 200.0f, 50.0f },
+		{ hp_ * 200.0f / 2.0f +50.0f ,25.0f },
+		{ hp_ * 200.0f, 50.0f },
 		{ 0.5f , 0.5f },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		"Resources/player.png");
@@ -46,12 +52,15 @@ void Player::Init(const Vector3& translate)
 	SetCollisonAttribute(0b0001);
 	SetCollisionMask(0b0110);
 	worldTransform3DReticle_.Initialize();
+	
 
 }
 
 void Player::Update()
 {
-
+	// HPを元に基準となる大きさを決定する
+	worldTransform_.scale_ = { hp_,hp_,hp_ };
+	SetRadius(hp_);
 	bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->IsDead()) {
 			delete bullet;
@@ -77,8 +86,6 @@ void Player::Update()
 
 	object_->Update();
 	
-	
-
 	Move();
 	
 	Jump();
@@ -125,7 +132,6 @@ void Player::Update()
 
 	Attack();
 
-	
 	// 弾更新
 	for (std::list<PlayerBullet*>::iterator itr = bullets_.begin(); itr != bullets_.end(); itr++) {
 		(*itr)->Update();
@@ -139,10 +145,9 @@ void Player::Update()
 		worldTransform_.translation_.z + cameraToPlayerDistance_.z });
 	object_->SetWorldTransform(worldTransform_);
 
-	hpUIBlue_->SetPosition({(worldTransform_.scale_.x * 200.0f / 2.0f) + 50.0f, 25.0f});
-	hpUIBlue_->SetSize({ worldTransform_.scale_.x * 200.0f ,50.0f});
+	hpUIBlue_->SetPosition({(hp_ * 200.0f / 2.0f) + 50.0f, 25.0f});
+	hpUIBlue_->SetSize({ hp_ * 200.0f ,50.0f});
 	hpUIBlue_->Update();
-	
 }
 
 void Player::Draw(Camera* camera)
@@ -163,8 +168,41 @@ void Player::DrawUI()
 
 void Player::Attack()
 {
+	if (Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+		// 自キャラの座標をコピー
+		Vector3 position = {
+			worldTransform_.matWorld_.m[3][0],
+			worldTransform_.matWorld_.m[3][1],
+			worldTransform_.matWorld_.m[3][2] };
 
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		// 弾の速度
+		const float kBulletSpeed = 1.0f;
+		Vector3 velocity(0, 0, kBulletSpeed);
+		// 自機から照準オブジェクトへのベクトル
+		velocity.x = GetReticleWorldPosition().x - GetWorldPosition().x;
+		velocity.y = GetReticleWorldPosition().y - GetWorldPosition().y;
+		velocity.z = GetReticleWorldPosition().z - GetWorldPosition().z;
+
+
+
+		velocity = Normalize(velocity);
+		velocity.x *= kBulletSpeed;
+		velocity.y *= kBulletSpeed;
+		velocity.z *= kBulletSpeed;;
+
+		// 速度ベクトルを自機の向きに合わせて回転させる
+		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+
+		//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+		// 弾を生成し、初期化
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Init(GetWorldPosition(), velocity);
+		//newBullet->SetParent(worldTransform_.parent_);
+		// 弾を登録する
+		bullets_.push_back(newBullet);
+	}
+
+	else if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 
 		// 自キャラの座標をコピー
 		Vector3 position = {
@@ -197,7 +235,6 @@ void Player::Attack()
 		//newBullet->SetParent(worldTransform_.parent_);
 		// 弾を登録する
 		bullets_.push_back(newBullet);
-
 
 	}
 }
@@ -236,8 +273,10 @@ void Player::Jump()
 
 
 	
-
-	if (!isJump_ &&Input::GetInstance()->TriggerKey(DIK_O)) {
+	if (!isJump_ && Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_LEFT_SHOULDER)) {
+		isJump_ = true;
+		jumpPower = 1;
+	} else if (!isJump_ &&Input::GetInstance()->TriggerKey(DIK_O)) {
 		
 		isJump_ = true;
 		jumpPower = 1;

@@ -15,7 +15,7 @@ void PlayerBullet::Init(const Vector3& pos, const Vector3& velocity)
 	
 	object_ = std::make_unique<Object3d>();
 	object_->Init();
-	object_->SetModel("box.obj");
+	object_->SetModel("player.obj");
 
 	// テクスチャ読み込み
 	//textureHandle_ = TextureManager::StoreTexture("Resources/uvChecker.png");
@@ -23,6 +23,8 @@ void PlayerBullet::Init(const Vector3& pos, const Vector3& velocity)
 	worldtransform_.Initialize();
 	// 引数で受け取った初期座標をセット
 	worldtransform_.translation_ = pos;
+	worldtransform_.scale_ = { 0.5f,0.5f,0.5f };
+	SetRadius(worldtransform_.scale_.x);
 	worldtransform_.UpdateMatrix();
 	velocity_ = velocity;
 	// 衝突属性を設定
@@ -42,6 +44,10 @@ void PlayerBullet::Update()
 	worldtransform_.translation_ = Add(worldtransform_.translation_, velocity_);
 	worldtransform_.UpdateMatrix();
 	object_->SetWorldTransform(worldtransform_);
+	if (worldtransform_.translation_.y - worldtransform_.scale_.y <= 0) {
+		isDead_ = true;
+
+	}
 }
 
 void PlayerBullet::Draw(Camera* camera)

@@ -9,7 +9,7 @@ void Floor::Init(const Vector3& scale, const Vector3& translate)
 	worldTransform_.scale_ = scale;
 	worldTransform_.translation_ = translate;
 
-	//ModelManager::GetInstance()->LoadModel("Resources/box/", "box.obj");
+	ModelManager::GetInstance()->LoadModel("Resources/box/", "box.obj");
 	object_ = std::make_unique<Object3d>();
 	object_->Init();
 	object_->SetModel("box.obj");
