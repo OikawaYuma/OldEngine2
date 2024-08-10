@@ -122,15 +122,8 @@ void Loder::LoadJsonFile(const std::string kDefaultBaseDirectory, const std::str
 	// レベルデータからオブジェクトを生成、配置
 	for (auto& objectData : levelData->objects) {
 		if (objectData.filename.compare("player") == 0) {
-			player->Init(objectData.transform.translate);
-
-			// モデルを指定して3Dオブジェクトを生成
-			Object3d* newObject3d = new Object3d();
-			newObject3d->Init();
-			newObject3d->SetModel(objectData.filename + ".obj");
-			newObject3d->SetTransform(objectData.transform);
-			// 配列に登録
-			//objects.push_back(newObject3d);
+			ModelManager::GetInstance()->LoadModel("Resources/" + objectData.filename , objectData.filename + ".obj");
+			player->Init(objectData.transform.translate,objectData.filename);
 		}
 		else if (objectData.filename.compare("floor")==0) {
 			floor->Init(objectData.transform.scale,objectData.transform.translate);
@@ -143,6 +136,12 @@ void Loder::LoadJsonFile(const std::string kDefaultBaseDirectory, const std::str
 		}
 
 		else if (objectData.filename.compare("item") == 0) {
+			Item* item = new Item();
+			item->SetPlayer(player);
+			item->Init(objectData.transform.translate);
+			items.push_back(item);
+		}
+		else if (objectData.filename.compare("worldDesign") == 0) {
 			Item* item = new Item();
 			item->SetPlayer(player);
 			item->Init(objectData.transform.translate);

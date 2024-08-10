@@ -65,6 +65,11 @@ void EnemyBullet::Update()
 	worldtransform_.translation_ = Add(worldtransform_.translation_, velocity_);
 	worldtransform_.UpdateMatrix();
 
+	if (worldtransform_.translation_.y -worldtransform_.scale_.y <=0) {
+		isDead_ = true;
+
+	}
+
 }
 
 void EnemyBullet::Draw(Camera* camera)
@@ -77,9 +82,10 @@ void EnemyBullet::OnCollision(uint32_t arri)
 {
 	isDead_ = true;
 	if (arri == 0b0001) {
-		Vector3 preScale = player_->GetScale();
-		preScale = Subtract(preScale, { 0.1f,0.1f,0.1f });
-		player_->SetScale(preScale);
+		float playerHP = player_->GetHP();
+		playerHP -= 0.1f;
+		player_->SetHP(playerHP);
+
 	}
 }
 

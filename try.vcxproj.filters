@@ -215,6 +215,7 @@
     <ClCompile Include="Engine\2d\PostEffect\Effect\Bloom.cpp" />
     <ClCompile Include="Game\WorldDesign\WorldDesign.cpp" />
     <ClCompile Include="Game\Enemy\EnemyBullet\EnemyBullet.cpp" />
+    <ClCompile Include="Game\Scene\GameOverScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lib\utility\function.h">
@@ -417,6 +418,7 @@
     <ClInclude Include="Game\Utilty\Loder.h" />
     <ClInclude Include="Game\WorldDesign\WorldDesign.h" />
     <ClInclude Include="Game\Enemy\EnemyBullet\EnemyBullet.h" />
+    <ClInclude Include="Game\Scene\GameOverScene.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shader\Object3d.PS.hlsl">

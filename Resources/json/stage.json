@@ -2,28 +2,6 @@
     "name": "scene",
     "objects": [
         {
-            "type": "MESH",
-            "name": "Cube",
-            "transform": {
-                "translation": [
-                    0.0,
-                    100.0,
-                    1.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "player"
-        },
-        {
             "type": "LIGHT",
             "name": "Light",
             "transform": {
@@ -218,6 +196,138 @@
                 ]
             },
             "file_name": "item"
+        },
+        {
+            "type": "MESH",
+            "name": "球",
+            "transform": {
+                "translation": [
+                    0.0,
+                    100.0,
+                    0.0
+                ],
+                "rotation": [
+                    1.5707964897155762,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "player"
+        },
+        {
+            "type": "MESH",
+            "name": "木",
+            "transform": {
+                "translation": [
+                    26.25,
+                    221.83999633789062,
+                    10.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    3.0,
+                    3.0,
+                    10.0
+                ]
+            },
+            "file_name": "worldDesign"
+        },
+        {
+            "type": "MESH",
+            "name": "木.001",
+            "transform": {
+                "translation": [
+                    -46.95000076293945,
+                    246.61000061035156,
+                    10.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    3.0,
+                    3.0,
+                    10.0
+                ]
+            },
+            "file_name": "worldDesign"
+        },
+        {
+            "type": "MESH",
+            "name": "木.002",
+            "transform": {
+                "translation": [
+                    30.189998626708984,
+                    293.760009765625,
+                    10.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    3.0,
+                    3.0,
+                    10.0
+                ]
+            },
+            "file_name": "worldDesign"
+        },
+        {
+            "type": "MESH",
+            "name": "木.003",
+            "transform": {
+                "translation": [
+                    -43.040000915527344,
+                    296.44000244140625,
+                    10.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    3.0,
+                    3.0,
+                    10.0
+                ]
+            },
+            "file_name": "worldDesign"
+        },
+        {
+            "type": "MESH",
+            "name": "木.004",
+            "transform": {
+                "translation": [
+                    -45.0,
+                    200.0,
+                    10.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    3.0,
+                    3.0,
+                    10.0
+                ]
+            },
+            "file_name": "worldDesign"
         }
     ]
 }

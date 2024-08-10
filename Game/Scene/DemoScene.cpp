@@ -80,7 +80,7 @@ void DemoScene::Init()
 void DemoScene::Update()
 {
 	XINPUT_STATE joyState{};
-	if (Input::GetInstance()->GetJoystickState(joyState)) {
+	if (Input::GetInstance()->GetJoystickState()) {
 	}
 
 	short leftStickX = joyState.Gamepad.sThumbLX;

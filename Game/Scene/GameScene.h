@@ -30,6 +30,7 @@ public:
 
 private:
 
+
 	std::unique_ptr<RailCamera> camera_ = nullptr;
 	std::unique_ptr<Player> player_ = nullptr;
 	std::list<Enemy*> enemys_;
@@ -37,7 +38,7 @@ private:
 	std::list<Item*> items_;
 	Floor* floor_ = nullptr;
 	PostProcess* postProcess_ = nullptr;
-
+	uint32_t destroyCount_ = 0;
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 	
 };
