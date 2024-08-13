@@ -59,3 +59,7 @@ Vector3 CalculateValue(const std::vector<KeyFrameVector3>& keyframes, float time
 Quaternion CalculateValue(const std::vector<KeyFrameQuaternion>& keyframes, float time);
 Matrix4x4 Transpose(const Matrix4x4 m);
 Vector3 Transform1(const Vector3& vector, const Matrix4x4& matrix);
+
+float Length(const Vector3& v);
+
+bool IsCollisionAABB(const Vector3& AABBPos, const Vector3& AABBSize, const Vector3& spherePos, const float& radius);

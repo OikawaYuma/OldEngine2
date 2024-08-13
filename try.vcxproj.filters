@@ -419,6 +419,7 @@
     <ClInclude Include="Game\WorldDesign\WorldDesign.h" />
     <ClInclude Include="Game\Enemy\EnemyBullet\EnemyBullet.h" />
     <ClInclude Include="Game\Scene\GameOverScene.h" />
+    <ClInclude Include="Game\IBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shader\Object3d.PS.hlsl">

@@ -3,7 +3,7 @@
 #include "ModelManager.h"
 #include "Input.h"
 #include "Model.h"
-
+#include "function.h"
 #include "ImGuiCommon.h"
 
 void Player::Init(const Vector3& translate, const std::string filename)
@@ -11,6 +11,8 @@ void Player::Init(const Vector3& translate, const std::string filename)
 	floorTex_ = TextureManager::GetInstance()->StoreTexture("Resources/player.png");
 	playerReticleTex_ = TextureManager::GetInstance()->StoreTexture("Resources/Reticle.png");
 	playerHpUITex_ = TextureManager::GetInstance()->StoreTexture("Resources/HpUI.png");
+	normalBulletUITex_ = TextureManager::GetInstance()->StoreTexture("Resources/bulletUI/NormalBulletUI.png");
+	hommingBulletUITex_ = TextureManager::GetInstance()->StoreTexture("Resources/bulletUI/HommingBulletUI.png");
 
 	hp_ = 1.0f;
 
@@ -26,12 +28,26 @@ void Player::Init(const Vector3& translate, const std::string filename)
 	object_->Init();
 	object_->SetModel(filename + ".obj");
 
-	reticle_ = std::make_unique<Sprite>();
-	reticle_->Init(
+	object1_ = std::make_unique<Object3d>();
+	object1_->Init();
+	object1_->SetModel(filename + ".obj");
+	object2_ = std::make_unique<Object3d>();
+	object2_->Init();
+	object2_->SetModel("box.obj");
+
+	reticleNear_ = std::make_unique<Sprite>();
+	reticleNear_->Init(
 		{ 720.0f ,360.0f },
-		{ 100.0f, 100.0f },
+		{ 64.0f, 64.0f },
 		{ 0.5f , 0.5f },
 		{ 1.0f, 1.0f, 1.0f, 1.0f},
+		"Resources/Reticle.png");
+	reticleFar_ = std::make_unique<Sprite>();
+	reticleFar_->Init(
+		{ 720.0f ,360.0f },
+		{ 48.0f, 48.0f },
+		{ 0.5f , 0.5f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		"Resources/Reticle.png");
 
 	hpUIBlue_ = std::make_unique<Sprite>();
@@ -48,11 +64,23 @@ void Player::Init(const Vector3& translate, const std::string filename)
 		{ 0.5f , 0.5f },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		"Resources/HpUI.png");
+
+	bulletModeUI = std::make_unique<Sprite>();
+	bulletModeUI->Init(
+		{ 1180.0f ,620.0f },
+		{ 100.0f, 100.0f },
+		{ 0.5f , 0.5f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		"Resources/bulletUI/NormalBulletUI.png");
 	
 	SetCollisonAttribute(0b0001);
 	SetCollisionMask(0b0110);
-	worldTransform3DReticle_.Initialize();
-	
+	worldTransform3DReticleNear_.Initialize();
+	worldTransform3DReticleFar_.Initialize();
+	camera_->SetTranslate({ 
+		worldTransform_.translation_.x + cameraToPlayerDistance_.x,
+		cameraToPlayerDistance_.y, 
+		worldTransform_.translation_.z + cameraToPlayerDistance_.z });
 
 }
 
@@ -81,16 +109,26 @@ void Player::Update()
 	ImGui::DragFloat("cameraForY", &cameraFarY, 2.5f);
 	ImGui::End();
 	camera_->SetRotate(camerarotate_);
+	
 	camera_->SetFarClip(cameraFarY);
 	cameraToPlayerDistance_ = preCameraToPlayerDistance;
-
+	camera_->SetTranslate({
+		worldTransform_.translation_.x + cameraToPlayerDistance_.x,
+		cameraToPlayerDistance_.y,
+		worldTransform_.translation_.z + cameraToPlayerDistance_.z });
 	object_->Update();
+	object1_->Update();
+	object2_->Update();
 	
 	Move();
 	
 	Jump();
-	reticle_->Update();
+	reticleNear_->Update();
+	reticleFar_->Update();
 	
+	if (Input::GetInstance()->TriggerKey(DIK_K) ){
+		bulletMode_ = Homming;
+	}
 
 	Aim();
 	
@@ -106,11 +144,22 @@ void Player::Update()
 	// 合成行列の逆行列を計算する
 
 	Matrix4x4 matInverseVPV = Inverse(matVPV);
+	/////////////////////以下はデバック用//////////////////////////////////
+	Matrix4x4 matInverseVPVReturn = Inverse(matInverseVPV);
+	ImGui::Begin("camera keisan");
+	MatrixScreenPrintf(matVPV,"matvpv");
+	MatrixScreenPrintf(matInverseVPV, "matvpv");
+	MatrixScreenPrintf(matVPV, "matvpv");
+	ImGui::Text("matvpv", matVPV);
+	ImGui::Text("%matinversevpv", matInverseVPV);
+	ImGui::Text("%matinversevpvinverse", matInverseVPVReturn);
+	ImGui::End();
+
 
 	/*--------2点のワールド行列--------------*/
 	// スクリーン座標
-	Vector3 posNear = Vector3(static_cast<float>(reticle_->GetPosition().x), (float)reticle_->GetPosition().y, 0);
-	Vector3 posFar = Vector3(static_cast<float>(reticle_->GetPosition().x), float(reticle_->GetPosition().y), 1);
+	Vector3 posNear = Vector3(static_cast<float>(reticleNear_->GetPosition().x), (float)reticleNear_->GetPosition().y, 0);
+	Vector3 posFar = Vector3(static_cast<float>(reticleNear_->GetPosition().x), float(reticleNear_->GetPosition().y), 1);
 	// スクリーン座標系からワールド座標系へ
 	posNear = Transform1(posNear, matInverseVPV);
 	posFar = Transform1(posFar, matInverseVPV);
@@ -123,12 +172,38 @@ void Player::Update()
 	spriteDierection.z = posFar.z - posNear.z;
 	spriteDierection = Normalize(spriteDierection);
 	// カメラから照準オブジェクトの距離
-	const float kDistanceTextObject = 100.0f;
-	worldTransform3DReticle_.translation_.x = posNear.x + spriteDierection.x * kDistanceTextObject;
-	worldTransform3DReticle_.translation_.y = posNear.y + spriteDierection.y * kDistanceTextObject;
-	worldTransform3DReticle_.translation_.z = posNear.z + spriteDierection.z * kDistanceTextObject;
+	const float kDistanceTextObjectNear = 100.0f;
+	const float kDistanceTextObjectFar = 150.0f;
+	worldTransform3DReticleNear_.translation_.x = posNear.x + spriteDierection.x * kDistanceTextObjectNear;
+	worldTransform3DReticleNear_.translation_.y = posNear.y + spriteDierection.y * kDistanceTextObjectNear;
+	worldTransform3DReticleNear_.translation_.z = posNear.z + spriteDierection.z * kDistanceTextObjectNear;
+	worldTransform3DReticleNear_.UpdateMatrix();
 
-	worldTransform3DReticle_.UpdateMatrix();
+	worldTransform3DReticleFar_.translation_.x = posNear.x + spriteDierection.x * kDistanceTextObjectFar;
+	worldTransform3DReticleFar_.translation_.y = posNear.y + spriteDierection.y * kDistanceTextObjectFar;
+	worldTransform3DReticleFar_.translation_.z = posNear.z + spriteDierection.z * kDistanceTextObjectFar;
+	worldTransform3DReticleFar_.UpdateMatrix();
+
+	{
+		Vector3 posReti = {
+			worldTransform3DReticleFar_.matWorld_.m[3][0],
+			worldTransform3DReticleFar_.matWorld_.m[3][1],
+			worldTransform3DReticleFar_.matWorld_.m[3][2],
+		};
+
+		// ビューポート行列
+		Matrix4x4 matView = MakeViewportMatrix(0, 0, WinAPI::kClientWidth_, WinAPI::kClientHeight_, 0, 1);
+
+		// ビュー行列とプロジェクション行列、ビューポート行列を合成する
+		Matrix4x4 matViewProjectionViewport =
+			Multiply(camera_->GetViewprojectionMatrix(), matView);
+
+		// ワールド→スクリーン座標変換(ここで3Dから2dになる)
+		posReti = Transform1(posReti, matViewProjectionViewport);
+
+		// スプライトのレティクルに座標返還
+		reticleFar_->SetPosition(Vector2(posReti.x,posReti.y));
+	}
 
 	Attack();
 
@@ -139,11 +214,13 @@ void Player::Update()
 	
 	
 	worldTransform_.UpdateMatrix();
-	camera_->SetTranslate({ 
-		worldTransform_.translation_.x + cameraToPlayerDistance_.x,
-		cameraToPlayerDistance_.y, 
-		worldTransform_.translation_.z + cameraToPlayerDistance_.z });
+	//camera_->SetTranslate({ 
+	//	worldTransform_.translation_.x + cameraToPlayerDistance_.x,
+	//	cameraToPlayerDistance_.y, 
+	//	worldTransform_.translation_.z + cameraToPlayerDistance_.z });
 	object_->SetWorldTransform(worldTransform_);
+	object1_->SetWorldTransform(worldTransform3DReticleNear_);
+	object2_->SetWorldTransform(worldTransform3DReticleFar_);
 
 	hpUIBlue_->SetPosition({(hp_ * 200.0f / 2.0f) + 50.0f, 25.0f});
 	hpUIBlue_->SetSize({ hp_ * 200.0f ,50.0f});
@@ -153,6 +230,9 @@ void Player::Update()
 void Player::Draw(Camera* camera)
 {
 	object_->Draw(floorTex_,camera);
+	object1_->Draw(floorTex_, camera_);
+	object2_->Draw(floorTex_, camera_);
+
 	for (std::list<PlayerBullet*>::iterator itr = bullets_.begin(); itr != bullets_.end(); itr++) {
 		(*itr)->Draw(camera);
 	}
@@ -160,9 +240,16 @@ void Player::Draw(Camera* camera)
 
 void Player::DrawUI()
 {
-	reticle_->Draw(playerReticleTex_,{1.0f,1.0f,1.0f,1.0f});
+	reticleNear_->Draw(playerReticleTex_,{1.0f,1.0f,1.0f,1.0f});
+	reticleFar_->Draw(playerReticleTex_, { 1.0f,1.0f,1.0f,1.0f });
 	hpUI_->Draw(playerHpUITex_,{ 1.0f,1.0f,1.0f,1.0f });
 	hpUIBlue_->Draw(floorTex_, { 1.0f,1.0f,1.0f,1.0f });
+	if (bulletMode_ == Normal) {
+		bulletModeUI->Draw(normalBulletUITex_, { 1.0f,1.0f,1.0f,1.0f });
+	}
+	else if (bulletMode_ == Homming) {
+		bulletModeUI->Draw(hommingBulletUITex_, { 1.0f,1.0f,1.0f,1.0f });
+	}
 
 }
 
@@ -254,7 +341,7 @@ void Player::Move()
 		}
 	}
 
-	worldTransform_.translation_.z += 0.1f;
+	//worldTransform_.translation_.z += 0.1f;
 }
 
 void Player::Jump()
@@ -298,12 +385,12 @@ void Player::Jump()
 void Player::Aim()
 {
 	// スプライトの現在座標を取得
-	Vector2 spritePosition = reticle_->GetPosition();
+	Vector2 spritePosition = reticleNear_->GetPosition();
 	Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_A);
 	// ゲームパッド状態取得
 	if (Input::GetInstance()->GetJoystickState()) {
-		spritePosition.x += (float)Input::GetInstance()->GetJoyState().Gamepad.sThumbRX / SHRT_MAX * 8.0f;
-		spritePosition.y -= (float)Input::GetInstance()->GetJoyState().Gamepad.sThumbRY / SHRT_MAX * 8.0f;
+		spritePosition.x += (float)Input::GetInstance()->GetJoyState().Gamepad.sThumbRX / SHRT_MAX * 12.0f;
+		spritePosition.y -= (float)Input::GetInstance()->GetJoyState().Gamepad.sThumbRY / SHRT_MAX * 12.0f;
 	}
 	else {
 		
@@ -320,7 +407,7 @@ void Player::Aim()
 			spritePosition.y += 5;
 		}
 	}
-	reticle_->SetPosition(spritePosition);
+	reticleNear_->SetPosition(spritePosition);
 }
 
 Vector3 Player::GetReticleWorldPosition()
@@ -328,9 +415,9 @@ Vector3 Player::GetReticleWorldPosition()
 	// ワールド行列座標を入れる変数
 	Vector3 worldPos;
 	// ワールド行列の平行移動成分を取得（ワールド座標）
-	worldPos.x = worldTransform3DReticle_.matWorld_.m[3][0];
-	worldPos.y = worldTransform3DReticle_.matWorld_.m[3][1];
-	worldPos.z = worldTransform3DReticle_.matWorld_.m[3][2];
+	worldPos.x = worldTransform3DReticleNear_.matWorld_.m[3][0];
+	worldPos.y = worldTransform3DReticleNear_.matWorld_.m[3][1];
+	worldPos.z = worldTransform3DReticleNear_.matWorld_.m[3][2];
 
 	return worldPos;
 }

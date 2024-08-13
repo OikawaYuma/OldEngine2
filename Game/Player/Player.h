@@ -5,7 +5,7 @@
 #include "WorldTransform.h"
 #include "Camera.h"
 #include "Sprite.h"
-
+#include "IBullet.h"
 #include "PlayerBullet/PlayerBullet.h"
 class Player: public Collider
 {
@@ -57,14 +57,26 @@ public: // Collision
 	
 private:
 	std::unique_ptr<Object3d> object_ = nullptr;
-	std::unique_ptr<Sprite> reticle_ = nullptr;
+	std::unique_ptr<Object3d> object1_ = nullptr;
+	std::unique_ptr<Object3d> object2_ = nullptr;
+	std::unique_ptr<Sprite> reticleNear_ = nullptr;
+	std::unique_ptr<Sprite> reticleFar_ = nullptr;
 	std::unique_ptr<Sprite> hpUI_ = nullptr;
 	std::unique_ptr<Sprite> hpUIBlue_ = nullptr;
+	std::unique_ptr<Sprite> bulletModeUI = nullptr;
 
 	std::list<PlayerBullet*> bullets_;
 	uint32_t floorTex_;
 	uint32_t playerReticleTex_;
 	uint32_t playerHpUITex_;
+
+	//bulletMode
+	uint32_t bulletMode_ = Normal;
+	
+	// BulletModeUI
+	uint32_t normalBulletUITex_;
+	uint32_t hommingBulletUITex_;
+
 	WorldTransform worldTransform_;
 	Camera* camera_ = nullptr;
 	bool isJump_ = false;
@@ -77,9 +89,11 @@ private:
 	uint32_t jumpAgainTimer_ = 0;
 
 	float hp_ = 1;
-	Vector3 cameraToPlayerDistance_{0.0f, 20.0f, -63.0f};
+	Vector3 cameraToPlayerDistance_{0.0f, 7.0f, -30.0f};
 
 	// 3Dレティクル用ワールドトランスフォーム
-	WorldTransform worldTransform3DReticle_;
+	WorldTransform worldTransform3DReticleNear_;
+	// 3Dレティクル用ワールドトランスフォーム
+	WorldTransform worldTransform3DReticleFar_;
 };
 

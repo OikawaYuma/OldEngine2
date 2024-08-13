@@ -9,6 +9,7 @@
 #include "CollisionManager.h"	
 #include <vector>
 #include "Enemy/EnemyBullet/EnemyBullet.h"
+#include "WorldDesign/WorldDesign.h"
 
 
 
@@ -36,6 +37,7 @@ private:
 	std::list<Enemy*> enemys_;
 	std::list<EnemyBullet*> enemyBullets_;
 	std::list<Item*> items_;
+	std::list<WorldDesign*> worldDesigns_;
 	Floor* floor_ = nullptr;
 	PostProcess* postProcess_ = nullptr;
 	uint32_t destroyCount_ = 0;

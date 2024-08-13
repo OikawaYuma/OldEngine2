@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include<Windows.h>
 #include<cstdint>
 #include<string>
@@ -11,6 +11,7 @@
 #include<dxgidebug.h>
 #include<dxcapi.h>
 
+#include "Matrix4x4.h"
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"dxguid.lib")
@@ -30,3 +31,4 @@ IDxcBlob* CompileShader(
 	IDxcUtils* dxcUtils,
 	IDxcCompiler3* dxcCompiler,
 	IDxcIncludeHandler* includeHandler);
+void MatrixScreenPrintf(const Matrix4x4& matrix, const char* label);

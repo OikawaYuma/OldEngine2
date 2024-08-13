@@ -8,8 +8,9 @@
 #include "Floor/Floor.h"
 #include "Enemy/Enemy.h"
 #include "Item/Item.h"
+#include "WorldDesign/WorldDesign.h"
 
-void Loder::LoadJsonFile(const std::string kDefaultBaseDirectory, const std::string fileName, Player* player,Floor* floor, std::list<Enemy*>& enemys, std::list<Item*>& items)
+void Loder::LoadJsonFile(const std::string kDefaultBaseDirectory, const std::string fileName, Player* player,Floor* floor, std::list<Enemy*>& enemys, std::list<Item*>& items, std::list<WorldDesign*>& worldDesigns)
 {
 	// 連結してフルパスを得る
 	const std::string fullpath = kDefaultBaseDirectory + "/" + fileName + ".json";
@@ -142,12 +143,12 @@ void Loder::LoadJsonFile(const std::string kDefaultBaseDirectory, const std::str
 			items.push_back(item);
 		}
 		else if (objectData.filename.compare("worldDesign") == 0) {
-			Item* item = new Item();
-			item->SetPlayer(player);
-			item->Init(objectData.transform.translate);
-			items.push_back(item);
+			WorldDesign* wood = new WorldDesign();
+			ModelManager::GetInstance()->LoadModel("Resources/" + objectData.filename, objectData.filename + ".obj");
+			wood->Init(objectData.transform.scale, objectData.transform.translate,objectData.filename);
+			worldDesigns.push_back(wood);
 		}
-
+		
 	}
 
 }

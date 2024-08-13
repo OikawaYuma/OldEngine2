@@ -1,8 +1,10 @@
-﻿#include "function.h"
+#include "function.h"
 #include<Windows.h>
 #include <string>
 #include<format>
 #include<cassert>
+#include "Matrix4x4.h"
+#include "ImGuiCommon.h"
 //#include"imgui.h"
 //#include"imgui_impl_dx12.h"
 //#include"imgui_impl_win32.h"
@@ -111,4 +113,26 @@ IDxcBlob* CompileShader(
 	return shaderBlob;
 
 
+}
+
+void MatrixScreenPrintf(const Matrix4x4& matrix, const char* label) {
+	ImGui::Text(label+'\n');
+	
+	if (ImGui::BeginTable("table1", 3))
+	{
+		for (int row = 0; row < 4; row++)
+		{
+			ImGui::TableNextRow();
+			for (int column = 0; column < 3; column++)
+			{
+				ImGui::TableSetColumnIndex(column);
+				//ImGui::Text("Row %d Column %d", row, column);
+
+				ImGui::PushID(row * 3 + column);
+				ImGui::Text("%6.02 f", matrix.m[row][column]);
+				ImGui::PopID();
+			}
+		}
+		ImGui::EndTable();
+	}
 }

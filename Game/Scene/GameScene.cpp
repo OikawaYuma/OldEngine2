@@ -6,9 +6,10 @@ void GameScene::Init()
 	camera_ = std::make_unique<RailCamera>();
 	camera_->Init();
 	player_ = std::make_unique<Player>();
-	floor_ = new Floor();
-	Loder::LoadJsonFile("Resources/json","stage",player_.get(),floor_,enemys_,items_);
 	player_->SetCamera(camera_->GetCamera());
+	floor_ = new Floor();
+	Loder::LoadJsonFile("Resources/json","stage",player_.get(),floor_,enemys_,items_,worldDesigns_);
+	
 	
 	
 	
@@ -103,6 +104,10 @@ void GameScene::Update()
 		(*itr)->Update();
 	}
 
+	for (std::list<WorldDesign*>::iterator itr = worldDesigns_.begin(); itr != worldDesigns_.end(); itr++) {
+		(*itr)->Update();
+	}
+
 	ImGui::Begin("EnemyBullet");
 	ImGui::Text("%d", enemyBullets_.size());
 	ImGui::End();
@@ -114,8 +119,11 @@ void GameScene::Update()
 	}
 void GameScene::Draw()
 {
-	
+	for (std::list<WorldDesign*>::iterator itr = worldDesigns_.begin(); itr != worldDesigns_.end(); itr++) {
+		(*itr)->Draw(camera_->GetCamera());
+	}
 	floor_->Draw(camera_->GetCamera());
+	
 	for (std::list<Enemy*>::iterator itr = enemys_.begin(); itr != enemys_.end(); itr++) {
 		(*itr)->Draw(camera_->GetCamera());
 	}

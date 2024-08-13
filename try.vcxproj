@@ -224,6 +224,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Input\InputManager.h" />
     <ClInclude Include="Engine\2d\PostEffect\Effect\GaussianBlur.h" />
     <ClInclude Include="Engine\2d\PostEffect\Effect\GrayScale.h" />
+    <ClInclude Include="Game\IBullet.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx12.h" />

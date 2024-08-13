@@ -1,6 +1,7 @@
 #include"mathFunction.h"
 
 #include <limits>
+#include <algorithm>
 Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m) {
 	Vector3 result{
 		v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0],
@@ -644,4 +645,36 @@ Vector3 Transform1(const Vector3& vector, const Matrix4x4& matrix) {
 	result.y /= w;
 	result.z /= w;
 	return result;
+}
+
+//長さ（ノルム）
+float Length(const Vector3& v) {
+
+	float m3 = sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
+
+
+	return m3;
+};
+
+bool IsCollisionAABB(const Vector3& AABBPos,const Vector3& AABBSize, const Vector3& spherePos,const float& radius) {
+	bool g = false;
+
+	// 最近接点を求める
+	Vector3 closestPoint{
+		std::clamp(spherePos.x,AABBSize.x,-AABBSize.x),
+		std::clamp(spherePos.y,AABBSize.y,-AABBSize.y),
+		std::clamp(spherePos.z,AABBSize.z,-AABBSize.z)
+	};
+
+	// 最近接点と弾の中心との距離を求める
+	float distance = Length({
+		closestPoint.x - spherePos.x,
+		closestPoint.y - spherePos.y,
+		closestPoint.z - spherePos.z });
+	// 距離が半径よりも小さければ衝突
+	if (distance <= radius) {
+		g = true;
+	}
+	else { g = false; }
+	return g;
 }
