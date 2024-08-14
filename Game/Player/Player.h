@@ -76,6 +76,7 @@ private:
 	// BulletModeUI
 	uint32_t normalBulletUITex_;
 	uint32_t hommingBulletUITex_;
+	uint32_t razerBulletUITex_;
 
 	WorldTransform worldTransform_;
 	Camera* camera_ = nullptr;
