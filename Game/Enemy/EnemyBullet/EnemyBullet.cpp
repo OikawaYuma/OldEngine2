@@ -19,6 +19,7 @@ void EnemyBullet::Init(const Vector3& pos, const Vector3& velocity)
 	worldtransform_.translation_ = pos;
 	worldtransform_.scale_ = { 0.5f,0.5f,0.5f };
 	worldtransform_.UpdateMatrix();
+	SetRadius(worldtransform_.scale_.x);
 	velocity_ = velocity;
 	SetCollisonAttribute(1);
 	SetCollisionMask(0);

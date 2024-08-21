@@ -1,6 +1,6 @@
 #include "Item.h"
 #include "Player/Player.h"
-void Item::Init(const Vector3& translate)
+void Item::Init(const Vector3& translate, const std::string filename)
 {
 
 	floorTex_ = TextureManager::GetInstance()->StoreTexture("Resources/item.png");
@@ -15,8 +15,9 @@ void Item::Init(const Vector3& translate)
 	//ModelManager::GetInstance()->LoadModel("Resources/box/", "box.obj");
 	object_ = std::make_unique<Object3d>();
 	object_->Init();
-	object_->SetModel("box.obj");
+	object_->SetModel(filename + ".obj");
 
+	SetRadius(1.0f);
 	SetCollisonAttribute(0b0100);
 	SetCollisionMask(0b0001);
 }

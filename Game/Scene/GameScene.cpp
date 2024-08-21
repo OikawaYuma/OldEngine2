@@ -9,7 +9,8 @@ void GameScene::Init()
 	player_->SetCamera(camera_->GetCamera());
 	floor_ = new Floor();
 	Loder::LoadJsonFile("Resources/json","stage",player_.get(),floor_,enemys_,items_,worldDesigns_);
-	
+	lockOn_ = std::make_unique<LockOn>();
+	lockOn_->Init();
 	
 	
 	
@@ -20,7 +21,7 @@ void GameScene::Init()
 	postProcess_ = new PostProcess();
 	postProcess_->SetCamera(camera_->GetCamera());
 	postProcess_->Init();
-	IPostEffectState::SetEffectNo(PostEffectMode::kBloom);
+	IPostEffectState::SetEffectNo(PostEffectMode::kFullScreen);
 
 	destroyCount_ = 0;
 }
@@ -50,18 +51,26 @@ void GameScene::Update()
 		}
 		return false;
 		});
-
+	// 現状のクリア条件
 	if (destroyCount_>=3) {
 		IScene::SetSceneNo(CLEAR);
 	}
 	player_->Update();
 	camera_->Update();
-	float depthp = postProcess_->GetFarClip();
+
+	//　以下はいずれ直すものとする
+
+	/*float depthp = postProcess_->GetFarClip();
 	ImGui::Begin("Depth");
 	ImGui::SliderFloat("far", &depthp,0.1f,100.0f);
 	ImGui::End();
-	postProcess_->SerFarClip(depthp);
+	postProcess_->SerFarClip(depthp);*/
+	// 床
 	floor_->Update();
+	// ロックオン
+	lockOn_->Update(enemys_,camera_->GetCamera());
+
+	// エネミーの弾発射処理
 	for (std::list<Enemy*>::iterator itr = enemys_.begin(); itr != enemys_.end(); itr++) {
 		(*itr)->Update();
 		// enemy->Fire();
@@ -141,6 +150,7 @@ void GameScene::Draw()
 void GameScene::Draw2d()
 {
 	player_->DrawUI();
+	lockOn_->Draw();
 }
 
 void GameScene::PostDraw()

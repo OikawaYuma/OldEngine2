@@ -10,6 +10,7 @@
 #include <vector>
 #include "Enemy/EnemyBullet/EnemyBullet.h"
 #include "WorldDesign/WorldDesign.h"
+#include "LockOn/LockOn.h"
 
 
 
@@ -39,6 +40,8 @@ private:
 	std::list<Item*> items_;
 	std::list<WorldDesign*> worldDesigns_;
 	Floor* floor_ = nullptr;
+	std::unique_ptr<LockOn> lockOn_;
+
 	PostProcess* postProcess_ = nullptr;
 	uint32_t destroyCount_ = 0;
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;

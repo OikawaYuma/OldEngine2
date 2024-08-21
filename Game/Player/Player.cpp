@@ -110,7 +110,7 @@ void Player::Update()
 	ImGui::DragFloat("cameraForY", &cameraFarY, 2.5f);
 	ImGui::End();
 	camera_->SetRotate(camerarotate_);
-	
+	Move(); 
 	camera_->SetFarClip(cameraFarY);
 	cameraToPlayerDistance_ = preCameraToPlayerDistance;
 	camera_->SetTranslate({
@@ -121,7 +121,7 @@ void Player::Update()
 	object1_->Update();
 	object2_->Update();
 	
-	Move();
+	
 	
 	Jump();
 	reticleNear_->Update();
@@ -129,28 +129,28 @@ void Player::Update()
 	
 	if (Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_RIGHT_THUMB)) {
 		switch (bulletMode_) {
-		case BulletMode::Normal:
-			bulletMode_ = Homming;
+		case BulletMode::NormalBullet:
+			bulletMode_ = HommingBullet;
 			break;
-		case BulletMode::Homming:
+		case BulletMode::HommingBullet:
 			bulletMode_ = LaserBeam;
 			break;
 		case BulletMode::LaserBeam:
-			bulletMode_ = Normal;
+			bulletMode_ = NormalBullet;
 			break;
 		}
 	}
 	else if (Input::GetInstance()->TriggerKey(DIK_K) ){
 		
 		switch (bulletMode_) {
-		case BulletMode::Normal:
-			bulletMode_ = Homming;
+		case BulletMode::NormalBullet:
+			bulletMode_ = HommingBullet;
 			break;
-		case BulletMode::Homming:
+		case BulletMode::HommingBullet:
 			bulletMode_ = LaserBeam;
 			break;
 		case BulletMode::LaserBeam:
-			bulletMode_ = Normal;
+			bulletMode_ = NormalBullet;
 			break;
 		}
 	}
@@ -278,10 +278,10 @@ void Player::DrawUI()
 	hpUIBlue_->Draw(floorTex_, { 1.0f,1.0f,1.0f,1.0f });
 	
 	switch (bulletMode_) {
-	case BulletMode::Normal:
+	case BulletMode::NormalBullet:
 		bulletModeUI->Draw(normalBulletUITex_, { 1.0f,1.0f,1.0f,1.0f });
 		break;
-	case BulletMode::Homming:
+	case BulletMode::HommingBullet:
 		bulletModeUI->Draw(hommingBulletUITex_, { 1.0f,1.0f,1.0f,1.0f });
 		break;
 	case BulletMode::LaserBeam:
@@ -295,7 +295,7 @@ void Player::Attack()
 {
 
 	switch (bulletMode_) {
-	case BulletMode::Normal:
+	case BulletMode::NormalBullet:
 		if (Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
 			// 自キャラの座標をコピー
 			Vector3 position = {
@@ -366,7 +366,7 @@ void Player::Attack()
 
 		}
 		break;
-	case BulletMode::Homming:
+	case BulletMode::HommingBullet:
 		
 		break;
 	case BulletMode::LaserBeam:
@@ -391,7 +391,7 @@ void Player::Move()
 		}
 	}
 
-	//worldTransform_.translation_.z += 0.1f;
+	worldTransform_.translation_.z += 0.1f;
 }
 
 void Player::Jump()

@@ -41,6 +41,8 @@ public:// Getter
 	// Hpを取得
 	float GetHP() { return hp_; }
 
+	uint32_t GetBulletMode() { return bulletMode_; }
+
 public: // Setter
 	void SetCamera(Camera* camera) { camera_ = camera; };
 	//void SetParent(Matrix4x4 cameraMatWorld) { worldTransform_.parent_ = cameraMatWorld; }
@@ -71,7 +73,7 @@ private:
 	uint32_t playerHpUITex_;
 
 	//bulletMode
-	uint32_t bulletMode_ = Normal;
+	uint32_t bulletMode_ = NormalBullet;
 	
 	// BulletModeUI
 	uint32_t normalBulletUITex_;
@@ -97,4 +99,3 @@ private:
 	// 3Dレティクル用ワールドトランスフォーム
 	WorldTransform worldTransform3DReticleFar_;
 };
-

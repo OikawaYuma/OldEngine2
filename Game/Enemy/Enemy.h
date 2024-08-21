@@ -10,7 +10,7 @@ class Enemy : public Collider
 {
 
 public:
-	void Init(Vector3 translate);
+	void Init(Vector3 translate, const std::string filename);
 	void Update();
 	void Draw(Camera* camera);
 

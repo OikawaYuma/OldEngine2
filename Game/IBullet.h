@@ -2,8 +2,8 @@
 #include <stdint.h>
 
 enum BulletMode {
-	Normal,
-	Homming,
-	Lockon,
+	NormalBullet,
+	HommingBullet,
+	LockOnBullet,
 	LaserBeam
 };
