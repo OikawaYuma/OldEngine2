@@ -153,7 +153,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Input\InputManager.cpp" />
     <ClCompile Include="Engine\2d\PostEffect\Effect\GaussianBlur.cpp" />
     <ClCompile Include="Engine\2d\PostEffect\Effect\GrayScale.cpp" />
-    <ClCompile Include="Game\Enemy\IEnemy.h" />
+    <ClCompile Include="Game\Enemy\EnemyBase.h" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -193,6 +193,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3d\Skybox\Skybox.cpp" />
     <ClCompile Include="Engine\Interface\PSO\PSOSkybox.cpp" />
     <ClCompile Include="Game\WorldDesign\WorldDesign.cpp" />
+    <ClCompile Include="Game\Player\PlayerRazer\PlayerRazer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Scene\GameOverScene.h" />
@@ -284,6 +285,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Interface\PSO\PSOSkybox.h" />
     <ClInclude Include="Game\WorldDesign\WorldDesign.h" />
     <ClInclude Include="Game\LockOn\LockOn.h" />
+    <ClInclude Include="Game\Player\PlayerRazer\PlayerRazer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shader\Bloom.PS.hlsl">

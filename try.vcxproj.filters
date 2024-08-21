@@ -217,7 +217,8 @@
     <ClCompile Include="Game\Enemy\EnemyBullet\EnemyBullet.cpp" />
     <ClCompile Include="Game\Scene\GameOverScene.cpp" />
     <ClCompile Include="Game\LockOn\LockOn.cpp" />
-    <ClCompile Include="Game\Enemy\IEnemy.h" />
+    <ClCompile Include="Game\Enemy\EnemyBase.h" />
+    <ClCompile Include="Game\Player\PlayerRazer\PlayerRazer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lib\utility\function.h">
@@ -423,6 +424,7 @@
     <ClInclude Include="Game\Scene\GameOverScene.h" />
     <ClInclude Include="Game\IBullet.h" />
     <ClInclude Include="Game\LockOn\LockOn.h" />
+    <ClInclude Include="Game\Player\PlayerRazer\PlayerRazer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shader\Object3d.PS.hlsl">

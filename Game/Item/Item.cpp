@@ -40,9 +40,9 @@ void Item::Draw(Camera* camera)
 void Item::OnCollision(uint32_t attri)
 {
 	isDead_ = true;
-	Vector3 preScale = player_->GetScale();
-	preScale = Add(preScale, { 0.1f,0.1f,0.1f });
-	player_->SetScale(preScale);
+	float preScale = player_->GetHP();
+	preScale += 0.2f;
+	player_->SetHP(preScale);
 
 }
 

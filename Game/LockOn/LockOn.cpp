@@ -15,11 +15,11 @@ void LockOn::Init()
 	lockOnMarkTex_ = TextureManager::StoreTexture("Resources/Reticle.png");
 }
 
-void LockOn::Update(const std::list<Enemy*>& enemies, Camera* camera)
+void LockOn::Update(const std::list<Enemy*>& enemies, Camera* camera, Player* player)
 {
 	if (!target_) {
 		// ロックオンボタンをトリガーしたら
-		if (Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_Y)) {
+		if (player->GetBulletMode() == BulletMode::HommingBullet) {
 			// ロックオン対象の検索
 			// 目標
 			std::list<std::pair<float, const Enemy*>> targets;
@@ -59,7 +59,46 @@ void LockOn::Update(const std::list<Enemy*>& enemies, Camera* camera)
 	}
 	// ロックオン継続
 	else if (target_) {
+		std::list<std::pair<float, const Enemy*>> targets;
 		
+		// 全ての敵に対して順にロックオン判定
+		for (Enemy* enemy : enemies) {
+			// 敵のロックオン座標取得
+			Vector3 positionWorld = enemy->GetWorldPosition();
+
+			// ワールド→ビュー座標返還
+			Vector3 positionView = Transform1(positionWorld, camera->GetViewMatrix());
+			// 距離条件チェック
+			if (minDistance_ <= positionView.z && positionView.z <= maxDistance_) {
+				// カメラ前方との角度を計算
+				float arcTangent = std::atan2(
+					std::sqrt(positionView.x * positionView.x + positionView.y * positionView.y),
+					positionView.z);
+
+				// 角度条件チェック（コーンにおさまっているか）
+				if (std::abs(arcTangent) <= angleRange_) {
+					targets.emplace_back(std::make_pair(positionView.z, enemy));
+
+				}
+			}
+
+			// ロックオン対象をリセット
+			target_ = nullptr;
+			if (targets.size() != 0) {
+				// 距離が昇順にソート
+				targets.sort([](auto& pair1, auto& pair2) {return pair1.first < pair2.first; });
+				// ソートの結果一番近い敵をロックオン対象とする
+				target_ = targets.front().second;
+			}
+
+		}
+		if (targets.size() == 0) {
+			target_ = nullptr;
+			return;
+		}
+		if (target_ == nullptr) {
+			return;
+		}
 		// 敵のロックオン座標取得
 		Vector3 positionWolrd = target_->GetWorldPosition();
 		// ワールド座標からスクリーン座標に変換
@@ -74,7 +113,7 @@ void LockOn::Update(const std::list<Enemy*>& enemies, Camera* camera)
 		Vector3 pos = Transform1(positionWolrd, matViewProjectionViewport);
 
 		lockOnMark_->SetPosition({ pos.x,pos.y });
-		if (Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_Y)) {
+		if (player->GetBulletMode() != BulletMode::HommingBullet) {
 			target_ = nullptr;
 		}
 		else if (OutRangeJudge(camera)) {

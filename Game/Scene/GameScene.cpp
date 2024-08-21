@@ -11,7 +11,7 @@ void GameScene::Init()
 	Loder::LoadJsonFile("Resources/json","stage",player_.get(),floor_,enemys_,items_,worldDesigns_);
 	lockOn_ = std::make_unique<LockOn>();
 	lockOn_->Init();
-	
+	player_->SetLockOn(lockOn_.get());
 	
 	
 
@@ -68,7 +68,8 @@ void GameScene::Update()
 	// 床
 	floor_->Update();
 	// ロックオン
-	lockOn_->Update(enemys_,camera_->GetCamera());
+	lockOn_->Update(enemys_,camera_->GetCamera(),player_.get());
+
 
 	// エネミーの弾発射処理
 	for (std::list<Enemy*>::iterator itr = enemys_.begin(); itr != enemys_.end(); itr++) {

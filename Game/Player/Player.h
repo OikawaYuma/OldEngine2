@@ -7,6 +7,7 @@
 #include "Sprite.h"
 #include "IBullet.h"
 #include "PlayerBullet/PlayerBullet.h"
+class LockOn;
 class Player: public Collider
 {
 public:
@@ -45,6 +46,7 @@ public:// Getter
 
 public: // Setter
 	void SetCamera(Camera* camera) { camera_ = camera; };
+	void SetLockOn(LockOn* lockOn) { lockOn_ = lockOn; }
 	//void SetParent(Matrix4x4 cameraMatWorld) { worldTransform_.parent_ = cameraMatWorld; }
 	// 主に他クラスでプレイヤーと当たり、サイズが大小するときに使う
 	void SetScale(const Vector3& nextScale) { worldTransform_.scale_ = nextScale; }
@@ -98,4 +100,7 @@ private:
 	WorldTransform worldTransform3DReticleNear_;
 	// 3Dレティクル用ワールドトランスフォーム
 	WorldTransform worldTransform3DReticleFar_;
+
+private: // 貸出
+	LockOn* lockOn_ = nullptr;
 };

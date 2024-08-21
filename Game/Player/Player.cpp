@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "function.h"
 #include "ImGuiCommon.h"
+#include "LockOn/LockOn.h"
 
 void Player::Init(const Vector3& translate, const std::string filename)
 {
@@ -367,7 +368,77 @@ void Player::Attack()
 		}
 		break;
 	case BulletMode::HommingBullet:
-		
+		if (lockOn_->GetTarget()) {
+			if (Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+				// 自キャラの座標をコピー
+				Vector3 position = {
+					worldTransform_.matWorld_.m[3][0],
+					worldTransform_.matWorld_.m[3][1],
+					worldTransform_.matWorld_.m[3][2] };
+
+				// 弾の速度
+				const float kBulletSpeed = 1.0f;
+				Vector3 velocity(0, 0, kBulletSpeed);
+				// 自機から照準オブジェクトへのベクトル
+				velocity.x = lockOn_->GetTarget()->GetWorldPosition().x - GetWorldPosition().x;
+				velocity.y = lockOn_->GetTarget()->GetWorldPosition().y - GetWorldPosition().y;
+				velocity.z = lockOn_->GetTarget()->GetWorldPosition().z - GetWorldPosition().z;
+
+
+
+				velocity = Normalize(velocity);
+				velocity.x *= kBulletSpeed;
+				velocity.y *= kBulletSpeed;
+				velocity.z *= kBulletSpeed;;
+
+				// 速度ベクトルを自機の向きに合わせて回転させる
+				velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+
+				//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+				// 弾を生成し、初期化
+				PlayerBullet* newBullet = new PlayerBullet();
+				newBullet->Init(GetWorldPosition(), velocity);
+				//newBullet->SetParent(worldTransform_.parent_);
+				// 弾を登録する
+				bullets_.push_back(newBullet);
+			}
+
+			else if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+
+				// 自キャラの座標をコピー
+				Vector3 position = {
+					worldTransform_.matWorld_.m[3][0],
+					worldTransform_.matWorld_.m[3][1],
+					worldTransform_.matWorld_.m[3][2] };
+
+				// 弾の速度
+				const float kBulletSpeed = 1.0f;
+				Vector3 velocity(0, 0, kBulletSpeed);
+				// 自機から照準オブジェクトへのベクトル
+				velocity.x = GetReticleWorldPosition().x - GetWorldPosition().x;
+				velocity.y = GetReticleWorldPosition().y - GetWorldPosition().y;
+				velocity.z = GetReticleWorldPosition().z - GetWorldPosition().z;
+
+
+
+				velocity = Normalize(velocity);
+				velocity.x *= kBulletSpeed;
+				velocity.y *= kBulletSpeed;
+				velocity.z *= kBulletSpeed;;
+
+				// 速度ベクトルを自機の向きに合わせて回転させる
+				velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+
+				//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+				// 弾を生成し、初期化
+				PlayerBullet* newBullet = new PlayerBullet();
+				newBullet->Init(GetWorldPosition(), velocity);
+				//newBullet->SetParent(worldTransform_.parent_);
+				// 弾を登録する
+				bullets_.push_back(newBullet);
+
+			}
+		}
 		break;
 	case BulletMode::LaserBeam:
 		
@@ -434,6 +505,7 @@ void Player::Jump()
 
 void Player::Aim()
 {
+	
 	// スプライトの現在座標を取得
 	Vector2 spritePosition = reticleNear_->GetPosition();
 	Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_A);

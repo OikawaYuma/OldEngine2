@@ -3,10 +3,11 @@
 #include "WorldTransform.h"
 #include "Camera.h"
 #include "Collider.h"
+#include "EnemyBase.h"
 #include <TimedCall.h>
 
 class Player;
-class Enemy : public Collider
+class Enemy : public EnemyBase
 {
 
 public:
