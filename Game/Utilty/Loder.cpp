@@ -132,14 +132,14 @@ void Loder::LoadJsonFile(const std::string kDefaultBaseDirectory, const std::str
 		else if (objectData.filename.compare("enemy") == 0) {
 			Enemy* enemy = new Enemy();
 			enemy->SetPlayer(player);
-			enemy->Init(objectData.transform.translate);
+			enemy->Init(objectData.transform.translate,objectData.filename);
 			enemys.push_back(enemy);
 		}
 
 		else if (objectData.filename.compare("item") == 0) {
 			Item* item = new Item();
 			item->SetPlayer(player);
-			item->Init(objectData.transform.translate);
+			item->Init(objectData.transform.translate,objectData.filename);
 			items.push_back(item);
 		}
 		else if (objectData.filename.compare("worldDesign") == 0) {

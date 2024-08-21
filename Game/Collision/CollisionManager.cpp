@@ -57,27 +57,12 @@ void CollisionManager::PushClider(Collider* collider)
 }
 
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
-	/*uint32_t num = 0;
-	for (int i = 0; i < 3; i++) {
-		uint32_t attriA = colliderA->GetCollisonAttribute() >> (collisionNum -i);
-		uint32_t attriB = colliderB->GetCollisonAttribute() >>(collisionNum - i);
-		uint32_t maskA = colliderA->GetCollisionMask()>> (collisionNum - i);
-		uint32_t maskB = colliderB->GetCollisionMask()>> (collisionNum - i);
-
-		if ((attriA & maskB) !=
-			(attriB & maskA)) {
-			return;
-		};
-	}*/
 
 	if ((colliderA->GetCollisonAttribute() & colliderB->GetCollisionMask()) ==
 		(colliderB->GetCollisonAttribute() & colliderA->GetCollisionMask())) {
 		return;
 	};
-	// 
-	/*if (num == collisionNum) {
-		return;
-	}*/
+
 	// 判定対象AとBの座標
 	Vector3 posA, posB;
 	float radiusA, radiusB;

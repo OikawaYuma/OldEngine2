@@ -23,7 +23,7 @@ ConstantBuffer<Material> gMaterial : register(b0);
 ConstantBuffer<DirectionalLight> gDirectionalLight : register(b1);
 ConstantBuffer<Camera> gCamera : register(b2);
 Texture2D<float32_t4> gTexture : register(t0);
-TextureCube<float32_t4> gEnvironmentTexture : register(t1);
+//TextureCube<float32_t4> gEnvironmentTexture : register(t1);
 
 SamplerState gSampler : register(s0);
 
@@ -60,15 +60,15 @@ PixelShaderOutput main(VertexShaderOutput input)
         float32_t3 specular =
 			gDirectionalLight.color.rgb * gDirectionalLight.intensity * specularPow * float32_t3(1.0f, 1.0f, 1.0f);
 		// 拡散反射+鏡面反射
-		//output.color.rgb = diffuse + specular;
+		output.color.rgb = diffuse + specular;
 		//// αは今まで通り
 		//output.color.a = gMaterial.color.a * textureColor.a;
-        float32_t3 cameraToPosition = normalize(input.worldPosition - gCamera.worldPosition);
-        float32_t3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
-        float32_t4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
+        //float32_t3 cameraToPosition = normalize(input.worldPosition - gCamera.worldPosition);
+        //float32_t3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
+       // float32_t4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
 
 		//// 拡散反射+鏡面反射
-        output.color.rgb = environmentColor.rgb + diffuse + specular;
+        //output.color.rgb = environmentColor.rgb + diffuse + specular;
 		//// αは今まで通り
 		output.color.a = gMaterial.color.a * textureColor.a;
     }

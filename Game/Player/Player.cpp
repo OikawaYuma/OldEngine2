@@ -13,6 +13,7 @@ void Player::Init(const Vector3& translate, const std::string filename)
 	playerHpUITex_ = TextureManager::GetInstance()->StoreTexture("Resources/HpUI.png");
 	normalBulletUITex_ = TextureManager::GetInstance()->StoreTexture("Resources/bulletUI/NormalBulletUI.png");
 	hommingBulletUITex_ = TextureManager::GetInstance()->StoreTexture("Resources/bulletUI/HommingBulletUI.png");
+	razerBulletUITex_ = TextureManager::GetInstance()->StoreTexture("Resources/bulletUI/RazerBeam.png");
 
 	hp_ = 1.0f;
 
@@ -109,7 +110,7 @@ void Player::Update()
 	ImGui::DragFloat("cameraForY", &cameraFarY, 2.5f);
 	ImGui::End();
 	camera_->SetRotate(camerarotate_);
-	
+	Move(); 
 	camera_->SetFarClip(cameraFarY);
 	cameraToPlayerDistance_ = preCameraToPlayerDistance;
 	camera_->SetTranslate({
@@ -120,14 +121,38 @@ void Player::Update()
 	object1_->Update();
 	object2_->Update();
 	
-	Move();
+	
 	
 	Jump();
 	reticleNear_->Update();
 	reticleFar_->Update();
 	
-	if (Input::GetInstance()->TriggerKey(DIK_K) ){
-		bulletMode_ = Homming;
+	if (Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_RIGHT_THUMB)) {
+		switch (bulletMode_) {
+		case BulletMode::NormalBullet:
+			bulletMode_ = HommingBullet;
+			break;
+		case BulletMode::HommingBullet:
+			bulletMode_ = LaserBeam;
+			break;
+		case BulletMode::LaserBeam:
+			bulletMode_ = NormalBullet;
+			break;
+		}
+	}
+	else if (Input::GetInstance()->TriggerKey(DIK_K) ){
+		
+		switch (bulletMode_) {
+		case BulletMode::NormalBullet:
+			bulletMode_ = HommingBullet;
+			break;
+		case BulletMode::HommingBullet:
+			bulletMode_ = LaserBeam;
+			break;
+		case BulletMode::LaserBeam:
+			bulletMode_ = NormalBullet;
+			break;
+		}
 	}
 
 	Aim();
@@ -172,16 +197,21 @@ void Player::Update()
 	spriteDierection.z = posFar.z - posNear.z;
 	spriteDierection = Normalize(spriteDierection);
 	// カメラから照準オブジェクトの距離
-	const float kDistanceTextObjectNear = 100.0f;
-	const float kDistanceTextObjectFar = 150.0f;
+	const float kDistanceTextObjectNear = 50.0f;
+	const float kDistanceTextObjectFar = 75.0f;
 	worldTransform3DReticleNear_.translation_.x = posNear.x + spriteDierection.x * kDistanceTextObjectNear;
 	worldTransform3DReticleNear_.translation_.y = posNear.y + spriteDierection.y * kDistanceTextObjectNear;
 	worldTransform3DReticleNear_.translation_.z = posNear.z + spriteDierection.z * kDistanceTextObjectNear;
 	worldTransform3DReticleNear_.UpdateMatrix();
+	
+	worldTransform3DReticleFar_.translation_.x = GetReticleWorldPosition().x - GetWorldPosition().x;
+	worldTransform3DReticleFar_.translation_.y = GetReticleWorldPosition().y - GetWorldPosition().y;
+	worldTransform3DReticleFar_.translation_.z = GetReticleWorldPosition().z - GetWorldPosition().z;
+	worldTransform3DReticleFar_.translation_ = Normalize(worldTransform3DReticleFar_.translation_);
 
-	worldTransform3DReticleFar_.translation_.x = posNear.x + spriteDierection.x * kDistanceTextObjectFar;
-	worldTransform3DReticleFar_.translation_.y = posNear.y + spriteDierection.y * kDistanceTextObjectFar;
-	worldTransform3DReticleFar_.translation_.z = posNear.z + spriteDierection.z * kDistanceTextObjectFar;
+	worldTransform3DReticleFar_.translation_.x = GetWorldPosition().x + worldTransform3DReticleFar_.translation_.x * kDistanceTextObjectFar;
+	worldTransform3DReticleFar_.translation_.y = GetWorldPosition().y + worldTransform3DReticleFar_.translation_.y * kDistanceTextObjectFar;
+	worldTransform3DReticleFar_.translation_.z = GetWorldPosition().z + worldTransform3DReticleFar_.translation_.z * kDistanceTextObjectFar;
 	worldTransform3DReticleFar_.UpdateMatrix();
 
 	{
@@ -230,8 +260,10 @@ void Player::Update()
 void Player::Draw(Camera* camera)
 {
 	object_->Draw(floorTex_,camera);
-	object1_->Draw(floorTex_, camera_);
-	object2_->Draw(floorTex_, camera_);
+
+	// 3Dレティクルのモデル　デバック用
+	//object1_->Draw(floorTex_, camera_);
+	//object2_->Draw(floorTex_, camera_);
 
 	for (std::list<PlayerBullet*>::iterator itr = bullets_.begin(); itr != bullets_.end(); itr++) {
 		(*itr)->Draw(camera);
@@ -244,86 +276,104 @@ void Player::DrawUI()
 	reticleFar_->Draw(playerReticleTex_, { 1.0f,1.0f,1.0f,1.0f });
 	hpUI_->Draw(playerHpUITex_,{ 1.0f,1.0f,1.0f,1.0f });
 	hpUIBlue_->Draw(floorTex_, { 1.0f,1.0f,1.0f,1.0f });
-	if (bulletMode_ == Normal) {
+	
+	switch (bulletMode_) {
+	case BulletMode::NormalBullet:
 		bulletModeUI->Draw(normalBulletUITex_, { 1.0f,1.0f,1.0f,1.0f });
-	}
-	else if (bulletMode_ == Homming) {
+		break;
+	case BulletMode::HommingBullet:
 		bulletModeUI->Draw(hommingBulletUITex_, { 1.0f,1.0f,1.0f,1.0f });
+		break;
+	case BulletMode::LaserBeam:
+		bulletModeUI->Draw(razerBulletUITex_, { 1.0f,1.0f,1.0f,1.0f });
+		break;
 	}
 
 }
 
 void Player::Attack()
 {
-	if (Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
-		// 自キャラの座標をコピー
-		Vector3 position = {
-			worldTransform_.matWorld_.m[3][0],
-			worldTransform_.matWorld_.m[3][1],
-			worldTransform_.matWorld_.m[3][2] };
 
-		// 弾の速度
-		const float kBulletSpeed = 1.0f;
-		Vector3 velocity(0, 0, kBulletSpeed);
-		// 自機から照準オブジェクトへのベクトル
-		velocity.x = GetReticleWorldPosition().x - GetWorldPosition().x;
-		velocity.y = GetReticleWorldPosition().y - GetWorldPosition().y;
-		velocity.z = GetReticleWorldPosition().z - GetWorldPosition().z;
+	switch (bulletMode_) {
+	case BulletMode::NormalBullet:
+		if (Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+			// 自キャラの座標をコピー
+			Vector3 position = {
+				worldTransform_.matWorld_.m[3][0],
+				worldTransform_.matWorld_.m[3][1],
+				worldTransform_.matWorld_.m[3][2] };
+
+			// 弾の速度
+			const float kBulletSpeed = 1.0f;
+			Vector3 velocity(0, 0, kBulletSpeed);
+			// 自機から照準オブジェクトへのベクトル
+			velocity.x = GetReticleWorldPosition().x - GetWorldPosition().x;
+			velocity.y = GetReticleWorldPosition().y - GetWorldPosition().y;
+			velocity.z = GetReticleWorldPosition().z - GetWorldPosition().z;
 
 
 
-		velocity = Normalize(velocity);
-		velocity.x *= kBulletSpeed;
-		velocity.y *= kBulletSpeed;
-		velocity.z *= kBulletSpeed;;
+			velocity = Normalize(velocity);
+			velocity.x *= kBulletSpeed;
+			velocity.y *= kBulletSpeed;
+			velocity.z *= kBulletSpeed;;
 
-		// 速度ベクトルを自機の向きに合わせて回転させる
-		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+			// 速度ベクトルを自機の向きに合わせて回転させる
+			velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
-		//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
-		// 弾を生成し、初期化
-		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Init(GetWorldPosition(), velocity);
-		//newBullet->SetParent(worldTransform_.parent_);
-		// 弾を登録する
-		bullets_.push_back(newBullet);
-	}
+			//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+			// 弾を生成し、初期化
+			PlayerBullet* newBullet = new PlayerBullet();
+			newBullet->Init(GetWorldPosition(), velocity);
+			//newBullet->SetParent(worldTransform_.parent_);
+			// 弾を登録する
+			bullets_.push_back(newBullet);
+		}
 
-	else if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		else if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 
-		// 自キャラの座標をコピー
-		Vector3 position = {
-			worldTransform_.matWorld_.m[3][0],
-			worldTransform_.matWorld_.m[3][1],
-			worldTransform_.matWorld_.m[3][2] };
+			// 自キャラの座標をコピー
+			Vector3 position = {
+				worldTransform_.matWorld_.m[3][0],
+				worldTransform_.matWorld_.m[3][1],
+				worldTransform_.matWorld_.m[3][2] };
 
-		// 弾の速度
-		const float kBulletSpeed = 1.0f;
-		Vector3 velocity(0, 0, kBulletSpeed);
-		// 自機から照準オブジェクトへのベクトル
-		velocity.x = GetReticleWorldPosition().x - GetWorldPosition().x;
-		velocity.y = GetReticleWorldPosition().y - GetWorldPosition().y;
-		velocity.z = GetReticleWorldPosition().z - GetWorldPosition().z;
+			// 弾の速度
+			const float kBulletSpeed = 1.0f;
+			Vector3 velocity(0, 0, kBulletSpeed);
+			// 自機から照準オブジェクトへのベクトル
+			velocity.x = GetReticleWorldPosition().x - GetWorldPosition().x;
+			velocity.y = GetReticleWorldPosition().y - GetWorldPosition().y;
+			velocity.z = GetReticleWorldPosition().z - GetWorldPosition().z;
 
+
+
+			velocity = Normalize(velocity);
+			velocity.x *= kBulletSpeed;
+			velocity.y *= kBulletSpeed;
+			velocity.z *= kBulletSpeed;;
+
+			// 速度ベクトルを自機の向きに合わせて回転させる
+			velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+
+			//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+			// 弾を生成し、初期化
+			PlayerBullet* newBullet = new PlayerBullet();
+			newBullet->Init(GetWorldPosition(), velocity);
+			//newBullet->SetParent(worldTransform_.parent_);
+			// 弾を登録する
+			bullets_.push_back(newBullet);
+
+		}
+		break;
+	case BulletMode::HommingBullet:
 		
-
-		velocity = Normalize(velocity);
-		velocity.x *= kBulletSpeed;
-		velocity.y *= kBulletSpeed;
-		velocity.z *= kBulletSpeed;;
-
-		// 速度ベクトルを自機の向きに合わせて回転させる
-		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
-
-		//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
-		// 弾を生成し、初期化
-		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Init(GetWorldPosition(), velocity);
-		//newBullet->SetParent(worldTransform_.parent_);
-		// 弾を登録する
-		bullets_.push_back(newBullet);
-
+		break;
+	case BulletMode::LaserBeam:
+		
+		break;
 	}
+	
 }
 
 void Player::Move()
@@ -341,7 +391,7 @@ void Player::Move()
 		}
 	}
 
-	//worldTransform_.translation_.z += 0.1f;
+	worldTransform_.translation_.z += 0.1f;
 }
 
 void Player::Jump()

@@ -1,6 +1,6 @@
 #include "Enemy.h"
 #include "Player/Player.h"
-void Enemy::Init(Vector3 translate)
+void Enemy::Init(Vector3 translate, const std::string filename)
 {
 	floorTex_ = TextureManager::GetInstance()->StoreTexture("Resources/Enemy.png");
 	worldTransform_.Initialize();
@@ -15,7 +15,7 @@ void Enemy::Init(Vector3 translate)
 	//ModelManager::GetInstance()->LoadModel("Resources/box/", "box.obj");
 	object_ = std::make_unique<Object3d>();
 	object_->Init();
-	object_->SetModel("box.obj");
+	object_->SetModel( "box.obj");
 	SetCollisonAttribute(0b010);
 	SetCollisionMask(0b001);
 
