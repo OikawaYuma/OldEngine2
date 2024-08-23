@@ -656,14 +656,14 @@ float Length(const Vector3& v) {
 	return m3;
 };
 
-bool IsCollisionAABB(const Vector3& AABBPos,const Vector3& AABBSize, const Vector3& spherePos,const float& radius) {
+bool IsCollisionAABB(const Vector3& AABBPos, const Vector3& AABBMin, const Vector3& AABBMax, const Vector3& spherePos,const float& radius) {
 	bool g = false;
 
 	// 最近接点を求める
 	Vector3 closestPoint{
-		std::clamp(spherePos.x,AABBSize.x,-AABBSize.x),
-		std::clamp(spherePos.y,AABBSize.y,-AABBSize.y),
-		std::clamp(spherePos.z,AABBSize.z,-AABBSize.z)
+		std::clamp(spherePos.x,AABBMin.x ,AABBMax.x),
+		std::clamp(spherePos.y,AABBMin.y, AABBMax.y),
+		std::clamp(spherePos.z,AABBMin.z, AABBMax.z)
 	};
 
 	// 最近接点と弾の中心との距離を求める

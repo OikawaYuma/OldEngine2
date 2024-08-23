@@ -7,6 +7,7 @@
 #include "Sprite.h"
 #include "IBullet.h"
 #include "PlayerBullet/PlayerBullet.h"
+#include "PlayerRazer/PlayerRazer.h"
 class LockOn;
 class Player: public Collider
 {
@@ -30,6 +31,11 @@ public:
 	/// </summary>
 	void Move();
 
+	/// <summary>
+	/// プレイヤーの移動領域の移動
+	/// </summary>
+	void AreaMove();
+
 	void Jump();
 
 	void Aim();
@@ -44,6 +50,8 @@ public:// Getter
 
 	uint32_t GetBulletMode() { return bulletMode_; }
 
+
+
 public: // Setter
 	void SetCamera(Camera* camera) { camera_ = camera; };
 	void SetLockOn(LockOn* lockOn) { lockOn_ = lockOn; }
@@ -52,6 +60,10 @@ public: // Setter
 	void SetScale(const Vector3& nextScale) { worldTransform_.scale_ = nextScale; }
 
 	void SetHP(float hp) { hp_ = hp; }
+	
+	void SetParent(WorldTransform* worldtransform) {
+		worldTransform_.parent_ = worldtransform;
+	}
 
 public: // Collision
 
@@ -61,15 +73,27 @@ public: // Collision
 	
 private:
 	std::unique_ptr<Object3d> object_ = nullptr;
-	std::unique_ptr<Object3d> object1_ = nullptr;
-	std::unique_ptr<Object3d> object2_ = nullptr;
 	std::unique_ptr<Sprite> reticleNear_ = nullptr;
 	std::unique_ptr<Sprite> reticleFar_ = nullptr;
 	std::unique_ptr<Sprite> hpUI_ = nullptr;
 	std::unique_ptr<Sprite> hpUIBlue_ = nullptr;
 	std::unique_ptr<Sprite> bulletModeUI = nullptr;
 
+private:	// プレイヤーの移動範囲に関わる変数
+	std::unique_ptr<Object3d> areaObjRight_ = nullptr;
+	std::unique_ptr<Object3d> areaObjLeft_ = nullptr;
+	std::unique_ptr<Object3d> areaObjFront_ = nullptr;
+	std::unique_ptr<Object3d> areaObjBack_ = nullptr;
+
+	WorldTransform worldTransformRight_;
+	WorldTransform worldTransformLeft_;
+	WorldTransform worldTransformFront_;
+	WorldTransform worldTransformBack_;
+private:
+
+
 	std::list<PlayerBullet*> bullets_;
+	std::list<PlayerRazer*> razers_;
 	uint32_t floorTex_;
 	uint32_t playerReticleTex_;
 	uint32_t playerHpUITex_;
@@ -83,6 +107,9 @@ private:
 	uint32_t razerBulletUITex_;
 
 	WorldTransform worldTransform_;
+
+	float moveAreaCenter_;
+	Vector2 moveAreaRange_;
 	Camera* camera_ = nullptr;
 	bool isJump_ = false;
 	//float accel_ = 0.8f;

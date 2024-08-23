@@ -1,7 +1,8 @@
 #include "IScene.h"
 
 // タイトルシーンで初期化
-int IScene::sceneNo = TITLE;
+int IScene::sceneNo = TITLE
+;
 
 
 // 仮想デストラクタの定義

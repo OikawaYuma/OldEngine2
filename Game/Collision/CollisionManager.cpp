@@ -63,33 +63,70 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 		return;
 	};
 
-	// 判定対象AとBの座標
-	Vector3 posA, posB;
-	float radiusA, radiusB;
 
-	// colliderAの座標
-	posA = colliderA->GetWorldPosition();
-	radiusA = colliderA->GetRadius();
+	if (colliderA->GetCollisionMode() == Ballc && colliderB->GetCollisionMode() == Ballc) {
+		// 判定対象AとBの座標
+		Vector3 posA, posB;
+		float radiusA, radiusB;
 
-	// colliderBの座標
-	posB = colliderB->GetWorldPosition();
-	radiusB = colliderB->GetRadius();
-	// 弾と弾の考交差判定
-	// 衝突フィルタリング
+		// colliderAの座標
+		posA = colliderA->GetWorldPosition();
+		radiusA = colliderA->GetRadius();
 
-	float p2b = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) +
-		(posB.z - posA.z) * (posB.z - posA.z);
-	float r2r = (radiusA + radiusB) * (radiusA + radiusB);
-	/*  if (((colliderA->GetCollisonAttribute() & colliderB->GetCollisionMask())!=0) ||
-		  ((colliderB->GetCollisonAttribute() & colliderA->GetCollisionMask()))!=0) {
-	  return;
-	  };*/
+		// colliderBの座標
+		posB = colliderB->GetWorldPosition();
+		radiusB = colliderB->GetRadius();
+		// 弾と弾の考交差判定
+		// 衝突フィルタリング
 
-	if (p2b <= r2r) {
-		
-		// コライダーAの衝突時コールバックを呼び出す
-		colliderA->OnCollision(colliderB->GetCollisonAttribute());
-		// コライダーBの衝突時コールバックを呼び出す
-		colliderB->OnCollision(colliderA->GetCollisonAttribute());
+		float p2b = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) +
+			(posB.z - posA.z) * (posB.z - posA.z);
+		float r2r = (radiusA + radiusB) * (radiusA + radiusB);
+		/*  if (((colliderA->GetCollisonAttribute() & colliderB->GetCollisionMask())!=0) ||
+			  ((colliderB->GetCollisonAttribute() & colliderA->GetCollisionMask()))!=0) {
+		  return;
+		  };*/
+
+		if (p2b <= r2r) {
+
+			// コライダーAの衝突時コールバックを呼び出す
+			colliderA->OnCollision(colliderB->GetCollisonAttribute());
+			// コライダーBの衝突時コールバックを呼び出す
+			colliderB->OnCollision(colliderA->GetCollisonAttribute());
+		}
+	}
+	if (
+		(colliderA->GetCollisionMode() == Ballc && colliderB->GetCollisionMode() == OBBc) ||
+		(colliderA->GetCollisionMode() == OBBc && colliderB->GetCollisionMode() == Ballc)
+		) {
+		// 判定対象AとBの座標
+		Vector3 posA, posB;
+		float radiusA, radiusB;
+
+		// colliderAの座標
+		posA = colliderA->GetWorldPosition();
+		radiusA = colliderA->GetRadius();
+
+		// colliderBの座標
+		posB = colliderB->GetWorldPosition();
+		radiusB = colliderB->GetRadius();
+		// 弾と弾の考交差判定
+		// 衝突フィルタリング
+
+		float p2b = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) +
+			(posB.z - posA.z) * (posB.z - posA.z);
+		float r2r = (radiusA + radiusB) * (radiusA + radiusB);
+		/*  if (((colliderA->GetCollisonAttribute() & colliderB->GetCollisionMask())!=0) ||
+			  ((colliderB->GetCollisonAttribute() & colliderA->GetCollisionMask()))!=0) {
+		  return;
+		  };*/
+
+		//if (IsCollisionAABB()) {
+
+		//	// コライダーAの衝突時コールバックを呼び出す
+		//	colliderA->OnCollision(colliderB->GetCollisonAttribute());
+		//	// コライダーBの衝突時コールバックを呼び出す
+		//	colliderB->OnCollision(colliderA->GetCollisonAttribute());
+		//}
 	}
 };

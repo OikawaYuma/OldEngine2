@@ -21,6 +21,10 @@ public:
 	void Release()override;
 	int GameClose()override;
 
+public:
+
+	void PostEffectChange();
+
 private:
 	int sceneTime = 0;
 	Camera* camera = nullptr;
@@ -50,5 +54,8 @@ private:
 	Skybox* skybox_ = nullptr;
 	Vector3 hsv = {1.0f,1.0f,1.0f};
 	float rotateSize_ = 1.057f;
+
+
+	bool boxTexFlag = true;
 };
 

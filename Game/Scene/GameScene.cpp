@@ -3,7 +3,7 @@
 #include "ImGuiCommon.h"
 void GameScene::Init()
 {
-	camera_ = std::make_unique<RailCamera>();
+	camera_ = std::make_unique<FollowCamera>();
 	camera_->Init();
 	player_ = std::make_unique<Player>();
 	player_->SetCamera(camera_->GetCamera());
@@ -14,7 +14,7 @@ void GameScene::Init()
 	player_->SetLockOn(lockOn_.get());
 	
 	
-
+	//player_->SetParent(camera_->GetWorldTransform());
 	collisionManager_ = std::make_unique<CollisionManager>();
 	collisionManager_->SetGameScene(this);
 	collisionManager_->SetPlayer(player_.get());
@@ -57,7 +57,7 @@ void GameScene::Update()
 	}
 	player_->Update();
 	camera_->Update();
-
+	//player
 	//　以下はいずれ直すものとする
 
 	/*float depthp = postProcess_->GetFarClip();

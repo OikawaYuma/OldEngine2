@@ -20,7 +20,9 @@ void Player::Init(const Vector3& translate, const std::string filename)
 
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = translate;
+	worldTransform_.translation_.y = translate.y - camera_->GetTranslate().y;
 	worldTransform_.translation_.y = worldTransform_.scale_.y;
+	
 	// HPを元に基準となる大きさを決定する
 	worldTransform_.scale_ = {hp_,hp_,hp_};
 	SetRadius(hp_);
@@ -30,12 +32,50 @@ void Player::Init(const Vector3& translate, const std::string filename)
 	object_->Init();
 	object_->SetModel(filename + ".obj");
 
-	object1_ = std::make_unique<Object3d>();
-	object1_->Init();
-	object1_->SetModel(filename + ".obj");
-	object2_ = std::make_unique<Object3d>();
-	object2_->Init();
-	object2_->SetModel("box.obj");
+	////////////////////////////////////////////////////////////////////////
+	// プレイヤーの移動範囲
+	///////////////////////////////////////////////////////////////////////
+	areaObjRight_ = std::make_unique<Object3d>();
+	areaObjRight_->Init();
+	areaObjRight_->SetModel( "box.obj");
+
+	areaObjLeft_ = std::make_unique<Object3d>();
+	areaObjLeft_->Init();
+	areaObjLeft_->SetModel("box.obj");
+
+	areaObjFront_ = std::make_unique<Object3d>();
+	areaObjFront_->Init();
+	areaObjFront_->SetModel("box.obj");
+
+	areaObjBack_ = std::make_unique<Object3d>();
+	areaObjBack_->Init();
+	areaObjBack_->SetModel("box.obj");
+
+	worldTransformRight_.Initialize();
+	worldTransformLeft_.Initialize();
+	worldTransformFront_.Initialize();
+	worldTransformBack_.Initialize();
+
+	moveAreaCenter_ = translate.z;
+	moveAreaRange_ = { 20.0f,15.0f };
+
+
+	worldTransformRight_.translation_.y = -0.8f;
+	worldTransformLeft_.translation_.y = -0.8f;
+	worldTransformFront_.translation_.y = -0.8f;
+	worldTransformBack_.translation_.y = -0.8f;
+
+	worldTransformRight_.scale_.z = moveAreaRange_.y;
+	worldTransformLeft_.scale_.z = moveAreaRange_.y;
+	worldTransformFront_.scale_.x = moveAreaRange_.x;
+	worldTransformBack_.scale_.x = moveAreaRange_.x;
+
+	worldTransformRight_.scale_.x = 0.5f;
+	worldTransformLeft_.scale_.x = 0.5f;
+	worldTransformFront_.scale_.z = 0.5f;
+	worldTransformBack_.scale_.z = 0.5f;
+
+	/////////////////////////////////////////////////////////////////////////
 
 	reticleNear_ = std::make_unique<Sprite>();
 	reticleNear_->Init(
@@ -98,6 +138,13 @@ void Player::Update()
 		}
 		return false;
 		});
+	razers_.remove_if([](PlayerRazer* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+		});
 	Vector3 camerarotate_ = camera_->GetRotate();
 	Vector3 preCameraToPlayerDistance = cameraToPlayerDistance_;
 	float cameraFarY = camera_->GetFarClip();
@@ -113,14 +160,8 @@ void Player::Update()
 	camera_->SetRotate(camerarotate_);
 	Move(); 
 	camera_->SetFarClip(cameraFarY);
-	cameraToPlayerDistance_ = preCameraToPlayerDistance;
-	camera_->SetTranslate({
-		worldTransform_.translation_.x + cameraToPlayerDistance_.x,
-		cameraToPlayerDistance_.y,
-		worldTransform_.translation_.z + cameraToPlayerDistance_.z });
+	
 	object_->Update();
-	object1_->Update();
-	object2_->Update();
 	
 	
 	
@@ -242,16 +283,18 @@ void Player::Update()
 	for (std::list<PlayerBullet*>::iterator itr = bullets_.begin(); itr != bullets_.end(); itr++) {
 		(*itr)->Update();
 	}
+	// 弾更新
+	for (std::list<PlayerRazer*>::iterator itr = razers_.begin(); itr != razers_.end(); itr++) {
+		(*itr)->Update();
+	}
 	
 	
 	worldTransform_.UpdateMatrix();
-	//camera_->SetTranslate({ 
-	//	worldTransform_.translation_.x + cameraToPlayerDistance_.x,
-	//	cameraToPlayerDistance_.y, 
-	//	worldTransform_.translation_.z + cameraToPlayerDistance_.z });
+	camera_->SetTranslate({ 
+		worldTransform_.translation_.x + cameraToPlayerDistance_.x,
+		cameraToPlayerDistance_.y, 
+		worldTransform_.translation_.z + cameraToPlayerDistance_.z });
 	object_->SetWorldTransform(worldTransform_);
-	object1_->SetWorldTransform(worldTransform3DReticleNear_);
-	object2_->SetWorldTransform(worldTransform3DReticleFar_);
 
 	hpUIBlue_->SetPosition({(hp_ * 200.0f / 2.0f) + 50.0f, 25.0f});
 	hpUIBlue_->SetSize({ hp_ * 200.0f ,50.0f});
@@ -262,11 +305,18 @@ void Player::Draw(Camera* camera)
 {
 	object_->Draw(floorTex_,camera);
 
+	areaObjLeft_->Draw(floorTex_, camera);
+	areaObjRight_->Draw(floorTex_, camera);
+	areaObjFront_->Draw(floorTex_, camera);
+	areaObjBack_->Draw(floorTex_, camera);
 	// 3Dレティクルのモデル　デバック用
 	//object1_->Draw(floorTex_, camera_);
 	//object2_->Draw(floorTex_, camera_);
 
 	for (std::list<PlayerBullet*>::iterator itr = bullets_.begin(); itr != bullets_.end(); itr++) {
+		(*itr)->Draw(camera);
+	}
+	for (std::list<PlayerRazer*>::iterator itr = razers_.begin(); itr != razers_.end(); itr++) {
 		(*itr)->Draw(camera);
 	}
 }
@@ -440,9 +490,79 @@ void Player::Attack()
 			}
 		}
 		break;
+
 	case BulletMode::LaserBeam:
-		
-		break;
+
+		if (Input::GetInstance()->TriggerJoyButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+			// 自キャラの座標をコピー
+			Vector3 position = {
+				worldTransform_.matWorld_.m[3][0],
+				worldTransform_.matWorld_.m[3][1],
+				worldTransform_.matWorld_.m[3][2] };
+
+			// 弾の速度
+			const float kBulletSpeed = 1.0f;
+			Vector3 velocity(0, 0, kBulletSpeed);
+			// 自機から照準オブジェクトへのベクトル
+			velocity.x = GetReticleWorldPosition().x - GetWorldPosition().x;
+			velocity.y = GetReticleWorldPosition().y - GetWorldPosition().y;
+			velocity.z = GetReticleWorldPosition().z - GetWorldPosition().z;
+
+
+
+			velocity = Normalize(velocity);
+			velocity.x *= kBulletSpeed;
+			velocity.y *= kBulletSpeed;
+			velocity.z *= kBulletSpeed;;
+
+			// 速度ベクトルを自機の向きに合わせて回転させる
+			velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+
+			//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+			PlayerRazer* newBullet = new PlayerRazer();
+			newBullet->Init(GetWorldPosition(), velocity);
+			//newBullet->SetParent(&worldTransform_);
+			//newBullet->SetParent(worldTransform_.parent_);
+			// 弾を登録する
+			razers_.push_back(newBullet);
+		}
+
+		else if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+
+			// 自キャラの座標をコピー
+			Vector3 position = {
+				worldTransform_.matWorld_.m[3][0],
+				worldTransform_.matWorld_.m[3][1],
+				worldTransform_.matWorld_.m[3][2] };
+
+			// 弾の速度
+			const float kBulletSpeed = 1.0f;
+			Vector3 velocity(0, 0, kBulletSpeed);
+			// 自機から照準オブジェクトへのベクトル
+			velocity.x = GetReticleWorldPosition().x - GetWorldPosition().x;
+			velocity.y = GetReticleWorldPosition().y - GetWorldPosition().y;
+			velocity.z = GetReticleWorldPosition().z - GetWorldPosition().z;
+
+
+
+			velocity = Normalize(velocity);
+			velocity.x *= kBulletSpeed;
+			velocity.y *= kBulletSpeed;
+			velocity.z *= kBulletSpeed;;
+
+			// 速度ベクトルを自機の向きに合わせて回転させる
+			velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+
+			//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+			// 弾を生成し、初期化
+			PlayerRazer* newBullet = new PlayerRazer();
+			newBullet->Init(GetWorldPosition(), velocity);
+			//newBullet->SetParent(worldTransform_.parent_);
+			// 弾を登録する
+			razers_.push_back(newBullet);
+
+			break;
+		}
 	}
 	
 }
@@ -452,6 +572,7 @@ void Player::Move()
 
 	if (Input::GetInstance()->GetJoystickState()) {
 		worldTransform_.translation_.x += (float)Input::GetInstance()->GetJoyState().Gamepad.sThumbLX / SHRT_MAX * 0.4f;
+		worldTransform_.translation_.z += (float)Input::GetInstance()->GetJoyState().Gamepad.sThumbLY / SHRT_MAX * 0.4f;
 	}
 	else {
 		if (Input::GetInstance()->PushKey(DIK_A)) {
@@ -461,8 +582,50 @@ void Player::Move()
 			worldTransform_.translation_.x += 0.5f;
 		}
 	}
+	
+	AreaMove();
 
-	worldTransform_.translation_.z += 0.1f;
+	// 移動可能範囲外に出た時の処理
+	if (worldTransform_.translation_.z - worldTransform_.scale_.z <= worldTransformFront_.translation_.z + worldTransformFront_.scale_.z) {
+		worldTransform_.translation_.z = worldTransform_.scale_.z + worldTransformFront_.translation_.z + worldTransformFront_.scale_.z;
+	}
+	else if (worldTransformBack_.translation_.z - worldTransformBack_.scale_.z <= worldTransform_.translation_.z + worldTransform_.scale_.z) {
+		worldTransform_.translation_.z =  worldTransformBack_.translation_.z - worldTransformBack_.scale_.z- worldTransform_.scale_.z;
+	}
+
+	if (worldTransform_.translation_.x - worldTransform_.scale_.x <= worldTransformLeft_.translation_.x + worldTransformLeft_.scale_.x) {
+		worldTransform_.translation_.x = worldTransform_.scale_.x + worldTransformLeft_.translation_.x + worldTransformLeft_.scale_.x;
+	}
+	else if (worldTransformRight_.translation_.x - worldTransformRight_.scale_.x <= worldTransform_.translation_.x + worldTransform_.scale_.x) {
+		worldTransform_.translation_.x =  worldTransformRight_.translation_.x - worldTransformRight_.scale_.x - worldTransform_.scale_.x;
+	}
+
+	//moveAreaCenter_ += 0.1f;
+	//worldTransform_.translation_.z = absoluteMove_ + movableRange_;
+}
+
+void Player::AreaMove()
+{
+	moveAreaCenter_ += 0.1f;
+
+	worldTransformBack_.translation_.z = moveAreaRange_.y + moveAreaCenter_;
+	worldTransformFront_.translation_.z = -moveAreaRange_.y + moveAreaCenter_;
+	worldTransformRight_.translation_.z = moveAreaCenter_;
+	worldTransformLeft_.translation_.z = moveAreaCenter_;
+	worldTransformRight_.translation_.x = moveAreaRange_.x -worldTransformRight_.scale_.x;
+	worldTransformLeft_.translation_.x = -moveAreaRange_.x + worldTransformRight_.scale_.x;
+
+	areaObjFront_->SetWorldTransform(worldTransformFront_);
+	areaObjLeft_->SetWorldTransform(worldTransformLeft_);
+	areaObjBack_->SetWorldTransform(worldTransformBack_);
+	areaObjRight_->SetWorldTransform(worldTransformRight_);
+
+	worldTransformFront_.UpdateMatrix();
+	worldTransformRight_.UpdateMatrix();
+	worldTransformBack_.UpdateMatrix();
+	worldTransformLeft_.UpdateMatrix();
+
+	
 }
 
 void Player::Jump()

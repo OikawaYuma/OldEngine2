@@ -25,12 +25,14 @@ void DemoScene::Init()
 	material.color = { 1.0f,1.0f,1.0f,1.0f };
 	material.enableLighting = true;
 	worldTransform.Initialize();
-	worldTransform.translation_.x = 0;
+	worldTransform.translation_.x = 0.0f;
 	worldTransform.scale_ = { 1,1,1 };
 	worldTransform2.Initialize();
-	worldTransform2.translation_.x = 5;
+	worldTransform2.translation_.x = 5.0f;
+	worldTransform2.scale_ = { 2.0f,2.0f,2.0f };
 	worldTransform3.Initialize();
-	worldTransform3.translation_.x = -5;
+	worldTransform3.translation_.x = -5.0f;
+	worldTransform3.scale_ = { 2.0f,1.0f,2.0f };
 	worldTransform.UpdateMatrix();
 	worldTransform2.UpdateMatrix();
 	worldTransform3.UpdateMatrix();
@@ -42,7 +44,7 @@ void DemoScene::Init()
 	skybox_->Init(material);
 
 	ModelManager::GetInstance()->LoadAnimationModel("Resources/human", "sneakWalk.gltf");
-	ModelManager::GetInstance()->LoadAnimationModel("Resources/human", "walk.gltf");
+	ModelManager::GetInstance()->LoadModel("Resources/player", "player.obj");
 	ModelManager::GetInstance()->LoadModel("Resources/box", "box.obj");
 	;
 	object3d = new Object3d();
@@ -56,7 +58,7 @@ void DemoScene::Init()
 	object3d2->SetMapTexture(textureHandle3);
 	//object3d->SetSkybox(skybox_);
 	object3d->SetAnimationModel("sneakWalk.gltf");
-	object3d2->SetAnimationModel("walk.gltf");
+	object3d2->SetModel("player.obj");
 	object3d3->SetModel("box.obj");
     particle = new Particle();
     particle2 = new Particle();
@@ -86,6 +88,19 @@ void DemoScene::Update()
 	short leftStickX = joyState.Gamepad.sThumbLX;
 
 
+
+	ImGui::Begin("OBB,BALL");
+
+	ImGui::SliderFloat3("BALLro", &worldTransform2.rotation_.x, -5.0f, 10.0f);
+	ImGui::SliderFloat3("BALLtra", &worldTransform2.translation_.x, -5.0f, 10.0f);
+
+	ImGui::SliderFloat3("boxsca", &worldTransform3.rotation_.x, -5.0f, 10.0f);
+	ImGui::SliderFloat3("boxtran", &worldTransform3.translation_.x, -5.0f, 10.0f);
+
+	ImGui::End();
+
+
+
 	Vector3 camerattt = camera->GetRotate();
 	if (Input::GetInstance()->PushKey(DIK_A)) {
 		camerattt.x -= 0.08f;
@@ -104,16 +119,84 @@ void DemoScene::Update()
 	camera->Update();
 	demoSprite->Update();
 	
+	
+	PostEffectChange();
+
+	
+	if (Input::GetInstance()->TriggerKey(DIK_A)) {
+		rotateSize_ = 0.0f;
+	}
+	if (Input::GetInstance()->TriggerKey(DIK_D)) {
+		rotateSize_ = 0.05f;
+	}
+	
+	object3d->SetWorldTransform(worldTransform);
+	object3d2->SetWorldTransform(worldTransform2);
+	object3d3->SetWorldTransform(worldTransform3);
+	
+	object3d->Update();
+	object3d2->Update();
+	object3d3->Update();
+
+	/*if (IsCollisionAABB(worldTransform3.translation_, worldTransform3.scale_, worldTransform2.translation_, worldTransform2.scale_.x)) {
+		boxTexFlag = false;
+	}
+	else {
+		boxTexFlag = true;
+	}*/
+
+	
+
+}
+void DemoScene::Draw()
+{
+	//for (std::vector<Object3d*>::iterator itr = object3d_.begin(); itr != object3d_.end(); itr++) {
+	//	(*itr)->Draw(textureHandle, camera);
+	//}
+	//demoSprite->Draw(textureHandle,{1.0f,1.0f,1.0f,1.0f});
+	
+	object3d->Draw(textureHandle,camera);
+	object3d2->Draw(textureHandle, camera);
+	if (boxTexFlag) {
+		object3d3->Draw(textureHandle2, camera);
+	}
+	else {
+		object3d3->Draw(textureHandle, camera);
+	}
+	//particle->Draw(demoEmitter_, { worldTransform.translation_.x,worldTransform.translation_.y,worldTransform.translation_.z +5}, textureHandle, camera, demoRandPro, false);
+	//particle2->Draw(demoEmitter_, { worldTransform2.translation_.x,worldTransform2.translation_.y,worldTransform2.translation_.z +5}, textureHandle2, camera, demoRandPro, false);
+}
+
+void DemoScene::PostDraw()
+{
+	postProcess_->Draw();
+}
+
+void DemoScene::Draw2d()
+{
+}
+
+void DemoScene::Release() {
+}
+
+// ゲームを終了
+int DemoScene::GameClose()
+{
+	return false;
+}
+
+void DemoScene::PostEffectChange()
+{
 	ImGui::Begin("PostEffect");
 	Vector2 viggnetDarkness = postProcess_->GetDarkness();
 	float gauss = postProcess_->GetDeviation();
 	float threa = postProcess_->GetThreshold();
 	time_t currentTime = time(nullptr);
 	BloomInfo bloomInfo = postProcess_->GetBloominfo();
-	srand(unsigned int( currentTime));
+	srand(unsigned int(currentTime));
 	int eye = rand() % 70 + 1;
-	Vector2 randaa = { float(eye),float(rand() %90 + 2)};
-	hsv = { 
+	Vector2 randaa = { float(eye),float(rand() % 90 + 2) };
+	hsv = {
 		postProcess_->GetHSVInfo().hue,
 		postProcess_->GetHSVInfo().saturation,
 		postProcess_->GetHSVInfo().value,
@@ -122,7 +205,7 @@ void DemoScene::Update()
 		if (ImGui::Button("Base On ")) {
 			IPostEffectState::SetEffectNo(PostEffectMode::kFullScreen);
 		}
-		
+
 
 		ImGui::SliderFloat("hue", &hsv.x, -1.0f, 1.0f);
 		ImGui::SliderFloat("saturation", &hsv.y, -1.0f, 1.0f);
@@ -156,7 +239,7 @@ void DemoScene::Update()
 
 
 
-	
+
 	if (ImGui::TreeNode("DepthOutline")) {
 		if (ImGui::Button("DepthOutline On")) {
 			IPostEffectState::SetEffectNo(PostEffectMode::kOutline);
@@ -198,56 +281,10 @@ void DemoScene::Update()
 		ImGui::TreePop();
 	}
 	ImGui::End();
-
 	postProcess_->SetDarkness(viggnetDarkness);
 	postProcess_->SetDeviation(gauss);
 	postProcess_->SetThreshold(threa);
 	postProcess_->Setrandom(randaa);
 	postProcess_->SetBloomInfo(bloomInfo);
-	postProcess_->SetHSVInfo({hsv.x,hsv.y,hsv.z});
-	if (Input::GetInstance()->TriggerKey(DIK_A)) {
-		rotateSize_ = 0.0f;
-	}
-	if (Input::GetInstance()->TriggerKey(DIK_D)) {
-		rotateSize_ = 0.05f;
-	}
-	
-	object3d->SetWorldTransform(worldTransform);
-	object3d2->SetWorldTransform(worldTransform2);
-	object3d3->SetWorldTransform(worldTransform3);
-	
-	object3d->Update();
-	object3d2->Update();
-	object3d3->Update();
-
-}
-void DemoScene::Draw()
-{
-	//for (std::vector<Object3d*>::iterator itr = object3d_.begin(); itr != object3d_.end(); itr++) {
-	//	(*itr)->Draw(textureHandle, camera);
-	//}
-	//demoSprite->Draw(textureHandle,{1.0f,1.0f,1.0f,1.0f});
-	object3d->Draw(textureHandle,camera);
-	object3d2->Draw(textureHandle, camera);
-	object3d3->Draw(textureHandle, camera);
-	//particle->Draw(demoEmitter_, { worldTransform.translation_.x,worldTransform.translation_.y,worldTransform.translation_.z +5}, textureHandle, camera, demoRandPro, false);
-	//particle2->Draw(demoEmitter_, { worldTransform2.translation_.x,worldTransform2.translation_.y,worldTransform2.translation_.z +5}, textureHandle2, camera, demoRandPro, false);
-}
-
-void DemoScene::PostDraw()
-{
-	postProcess_->Draw();
-}
-
-void DemoScene::Draw2d()
-{
-}
-
-void DemoScene::Release() {
-}
-
-// ゲームを終了
-int DemoScene::GameClose()
-{
-	return false;
+	postProcess_->SetHSVInfo({ hsv.x,hsv.y,hsv.z });
 }

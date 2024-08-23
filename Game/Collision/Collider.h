@@ -1,6 +1,12 @@
 #pragma once
 #include"Vector3.h"
 #include<cstdint>
+enum CollisionMode {
+	AABBc,
+	OBBc,
+	Ballc,
+};
+
 class Collider {
 public:
 
@@ -26,9 +32,16 @@ public:
 	// 衝突マスク（相手）を設定
 	void SetCollisionMask(uint32_t CollisionMask);
 
+	// CollisionModeを取得
+	uint32_t GetCollisionMode() { return collisionMode_; }
+
+	void SetCollisionMode(uint32_t collisionMode) { collisionMode_ = collisionMode; }
+
 private:
 	// 衝突半径
 	float radius_ = 2;
+
+	uint32_t collisionMode_ = Ballc;
 
 	// 衝突属性（自分）
 	uint32_t collisionAttribute_ = 0xFFFFFFFF;

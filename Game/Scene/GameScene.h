@@ -1,6 +1,6 @@
 #pragma once
 #include "IScene.h"
-#include "RailCamera/RailCamera.h"
+#include "FollowCamera/FollowCamera.h"
 #include "Player/Player.h"
 #include "Floor/Floor.h"
 #include "Item/Item.h"
@@ -33,7 +33,7 @@ public:
 private:
 
 
-	std::unique_ptr<RailCamera> camera_ = nullptr;
+	std::unique_ptr<FollowCamera> camera_ = nullptr;
 	std::unique_ptr<Player> player_ = nullptr;
 	std::list<Enemy*> enemys_;
 	std::list<EnemyBullet*> enemyBullets_;
